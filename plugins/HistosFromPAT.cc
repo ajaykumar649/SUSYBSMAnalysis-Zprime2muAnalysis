@@ -327,7 +327,7 @@ void Zprime2muHistosFromPAT::fillOfflineMuonHistos(const pat::Muon* mu) {
   CombIsoNoECAL   ->Fill( iso.sumPt + iso.hadEt + iso.hoEt);
   RelCombIsoNoECAL->Fill((iso.sumPt + iso.hadEt + iso.hoEt) / mu->innerTrack()->pt());
 
-  const reco::TrackRef track = patmuon::getPickedTrack(*mu);
+  const reco::TrackRef track = mu->tunePMuonBestTrack();
   if (track.isAvailable()) {
     Chi2dof->Fill(track->normalizedChi2());
 
@@ -340,6 +340,7 @@ void Zprime2muHistosFromPAT::fillOfflineMuonHistos(const pat::Muon* mu) {
       TrackD0PV->Fill(fabs(track->dxy(vertex->position())));
       TrackDZPV->Fill(fabs(track->dz (vertex->position())));
     }
+    
 
     const reco::HitPattern& hp = track->hitPattern();
     NPxHits->Fill(hp.numberOfValidPixelHits());
@@ -355,6 +356,7 @@ void Zprime2muHistosFromPAT::fillOfflineMuonHistos(const pat::Muon* mu) {
     NStLayers->Fill(hp.stripLayersWithMeasurement());
     NTkLayers->Fill(hp.trackerLayersWithMeasurement());
   }
+  
 }
 
 void Zprime2muHistosFromPAT::fillOfflineElectronHistos(const pat::Electron* lep) {
@@ -432,12 +434,12 @@ void Zprime2muHistosFromPAT::fillDileptonHistos(const pat::CompositeCandidate& d
   if (lep0.isNonnull() && lep1.isNonnull()) {
     DileptonDeltaPt->Fill(fabs(lep0->pt()) - fabs(lep1->pt()));
     DileptonDeltaP ->Fill(fabs(lep0->p())  - fabs(lep1->p()));
-
+/*
     const pat::Muon* mu0 = toConcretePtr<pat::Muon>(lep0);
     const pat::Muon* mu1 = toConcretePtr<pat::Muon>(lep1);
     if (mu0 && mu1) {
-      const reco::Track* tk0 = patmuon::getPickedTrack(*mu0).get();
-      const reco::Track* tk1 = patmuon::getPickedTrack(*mu1).get();
+      const reco::Track* tk0 = mu0->tunePMuonBestTrack();
+      const reco::Track* tk1 = mu1->tunePMuonBestTrack();
       if (tk0 && tk1) {
 	DimuonMuonPtErrors->Fill(ptError(tk0), ptError(tk1));
 	DimuonMuonPtErrOverPt->Fill(ptError(tk0)/tk0->pt());
@@ -458,6 +460,7 @@ void Zprime2muHistosFromPAT::fillDileptonHistos(const pat::CompositeCandidate& d
 	}
       }
     }
+   */ 
   }
 
   DileptonDaughterIds->Fill(dil.daughter(0)->pdgId(), dil.daughter(1)->pdgId());

@@ -36,12 +36,12 @@ private:
   edm::Handle<reco::CandViewMatchMap> muon_photon_match_map;
   double electron_muon_veto_dR;
   std::vector<std::pair<float,float> > muon_eta_phis;
-  edm::InputTag trigger_summary_src;
+  //edm::InputTag trigger_summary_src;
   double trigger_match_max_dR;
-  trigger::TriggerObjectCollection L3_muons;
-  std::vector<int> L3_muons_matched;
-  trigger::TriggerObjectCollection prescaled_L3_muons;
-  std::vector<int> prescaled_L3_muons_matched;
+  //trigger::TriggerObjectCollection L3_muons;
+  //std::vector<int> L3_muons_matched;
+  //trigger::TriggerObjectCollection prescaled_L3_muons;
+  //std::vector<int> prescaled_L3_muons_matched;
 };
 
 Zprime2muLeptonProducer::Zprime2muLeptonProducer(const edm::ParameterSet& cfg)
@@ -53,7 +53,7 @@ Zprime2muLeptonProducer::Zprime2muLeptonProducer(const edm::ParameterSet& cfg)
     muon_track_for_momentum_primary(muon_track_for_momentum),
     muon_photon_match_src(cfg.getParameter<edm::InputTag>("muon_photon_match_src")),
     electron_muon_veto_dR(cfg.getParameter<double>("electron_muon_veto_dR")),
-    trigger_summary_src(cfg.getParameter<edm::InputTag>("trigger_summary_src")),
+    //trigger_summary_src(cfg.getParameter<edm::InputTag>("trigger_summary_src")),
     trigger_match_max_dR(cfg.getParameter<double>("trigger_match_max_dR"))
 {
   if (cfg.existsAs<std::vector<std::string> >("muon_tracks_for_momentum"))
@@ -191,8 +191,9 @@ std::pair<pat::Muon*,int> Zprime2muLeptonProducer::doLepton(const edm::Event& ev
 
   // Copy the input muon, and switch its p4/charge/vtx out for that of
   // the selected refit track.
-  pat::Muon* new_mu = cloneAndSwitchMuonTrack(mu);
-
+  
+  pat::Muon* new_mu = mu.clone(); //cloneAndSwitchMuonTrack(mu);
+/*
   if (new_mu == 0)
     return std::make_pair(new_mu, -1);
 
@@ -203,15 +204,16 @@ std::pair<pat::Muon*,int> Zprime2muLeptonProducer::doLepton(const edm::Event& ev
     if (mm.find(cand) != mm.end()) {
       new_mu->addUserData<reco::Particle::LorentzVector>("photon_p4", mm[cand]->p4());
       new_mu->addUserInt("photon_index", mm[cand].key());
-    }
+    }    
   }
-
+*/
   // Do our own trigger matching and embed the results. After the next
   // pair of function calls, there will be new user floats:
   // {TriggerMatch, prescaledTriggerMatch} x {Pt, Eta, Phi,
   // Charge}. (Maybe embed whole candidates later.)
-  embedTriggerMatch(new_mu, "",          L3_muons,           L3_muons_matched);
-  embedTriggerMatch(new_mu, "prescaled", prescaled_L3_muons, prescaled_L3_muons_matched);
+  
+  //embedTriggerMatch(new_mu, "",          L3_muons,           L3_muons_matched);
+  //embedTriggerMatch(new_mu, "prescaled", prescaled_L3_muons, prescaled_L3_muons_matched);
 
   // Evaluate cuts here with string object selector, and any code that
   // cannot be done in the string object selector (none so far).
@@ -270,6 +272,7 @@ void Zprime2muLeptonProducer::produce(edm::Event& event, const edm::EventSetup& 
   // matching. (This is how it was done in our configuration of the
   // PATTrigger matcher previously, so why not.) We do this for both
   // the main path and the prescaled path.
+  /*
   Zprime2muTriggerPathsAndFilters pandf(event);
   if (!pandf.valid)
     throw cms::Exception("Zprime2muLeptonProducer") << "could not determine the HLT path and filter names for this event\n";
@@ -279,7 +282,7 @@ void Zprime2muLeptonProducer::produce(edm::Event& event, const edm::EventSetup& 
   L3_muons_matched.resize(L3_muons.size(), 0);
   prescaled_L3_muons_matched.clear();
   prescaled_L3_muons_matched.resize(prescaled_L3_muons.size(), 0);
-
+*/
   // Using the main choice for momentum assignment, make the primary
   // collection of muons, which will have branch name
   // e.g. leptons:muons.
@@ -296,7 +299,7 @@ void Zprime2muLeptonProducer::produce(edm::Event& event, const edm::EventSetup& 
     for (pat::MuonCollection::const_iterator mu = muons->begin(), end = muons->end(); mu != end; ++mu)
       muon_eta_phis.push_back(std::make_pair(mu->eta(), mu->phi()));
   }
-
+/*
   // Now make secondary collections of muons using the momentum
   // assignments specified. They will come out as e.g. leptons:tpfms,
   // leptons:picky, ...
@@ -310,7 +313,7 @@ void Zprime2muLeptonProducer::produce(edm::Event& event, const edm::EventSetup& 
     muon_track_for_momentum = muon_tracks_for_momentum[i];
     doLeptons<pat::Muon>(event, muon_src, muon_track_for_momentum);
   }
-
+*/
   // And now make the HEEP electron collection, which will be
   // e.g. leptons:electrons.
   doLeptons<pat::Electron>(event, electron_src, "electrons");
