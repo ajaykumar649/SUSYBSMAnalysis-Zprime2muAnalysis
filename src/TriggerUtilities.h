@@ -2,6 +2,7 @@
 #define Zp2mu_TriggerUtilities_h
 
 #include "DataFormats/HLTReco/interface/TriggerObject.h"
+#include "DataFormats/PatCandidates/interface/TriggerObjectStandAlone.h"
 
 namespace edm { class Event; class InputTag; }
 
@@ -18,7 +19,7 @@ struct Zprime2muTriggerPathsAndFilters {
 
 trigger::TriggerObjectCollection get_L3_muons(const edm::Event& event,
 					      const std::string& filter,
-					      const edm::InputTag& trigger_summary_src = edm::InputTag("hltTriggerSummaryAOD", "", "HLT"),
+					      const edm::InputTag& trigger_summary_src = edm::InputTag("selectedPatTrigger"),
 					      const std::string& collection="hltL3MuonCandidates");
 
 #endif

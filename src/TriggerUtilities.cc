@@ -1,4 +1,5 @@
 #include "DataFormats/HLTReco/interface/TriggerEvent.h"
+#include "DataFormats/PatCandidates/interface/TriggerObjectStandAlone.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "SUSYBSMAnalysis/Zprime2muAnalysis/src/TriggerUtilities.h"
 
@@ -30,10 +31,12 @@ Zprime2muTriggerPathsAndFilters::Zprime2muTriggerPathsAndFilters(const edm::Even
     valid = false;
 }
 
+//pat::TriggerObjectStandAlone 
 trigger::TriggerObjectCollection get_L3_muons(const edm::Event& event, const std::string& filter, const edm::InputTag& trigger_summary_src, const std::string& collection) {
+  
   trigger::TriggerObjectCollection L3_muons;
-
-  edm::Handle<trigger::TriggerEvent> trigEvent;
+/*
+  edm::Handle<pat::TriggerObjectStandAlone> trigEvent;
   event.getByLabel(trigger_summary_src, trigEvent);
   if (!trigEvent.isValid())
     throw cms::Exception("get_L3_muons") << "couldn't get hltTriggerSummaryAOD " << trigger_summary_src.encode() << " from event\n";
@@ -68,10 +71,10 @@ trigger::TriggerObjectCollection get_L3_muons(const edm::Event& event, const std
 
   // Finally, run over the pre-selected range of keys to grab the
   // entries that also passed the filter.
-  const trigger::TriggerObjectCollection& TOC(trigEvent->getObjects());
+  const std::vector<pat::TriggerObjectStandAlone>& TOC(trigEvent->getObjects());
   for (trigger::size_type iO = collection_keys.first; iO <= collection_keys.second; ++iO)
     if (std::find(keys_passing_filter.begin(), keys_passing_filter.end(), iO) != keys_passing_filter.end())
       L3_muons.push_back(TOC.at(iO));
-
+*/
   return L3_muons;
 }
