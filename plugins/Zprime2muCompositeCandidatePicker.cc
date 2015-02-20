@@ -135,7 +135,7 @@ std::vector<reco::TransientTrack> Zprime2muCompositeCandidatePicker::get_transie
   for (size_t i = 0; i < n; ++i) {
     const pat::Muon* mu = toConcretePtr<pat::Muon>(dileptonDaughter(dil, i));
     assert(mu);
-    const reco::TrackRef& tk = patmuon::getPickedTrack(*mu);
+    const reco::TrackRef& tk = mu->muonBestTrack();
     ttv.push_back(ttkb->build(tk));
   }
 
@@ -200,7 +200,7 @@ std::pair<bool, float> Zprime2muCompositeCandidatePicker::dpt_over_pt(const pat:
       if (lep.isNonnull()) {
 	const pat::Muon* mu = toConcretePtr<pat::Muon>(lep);
 	if (mu) {
-	  const reco::Track* tk = patmuon::getPickedTrack(*mu).get();
+	  const reco::Track* tk = mu->muonBestTrack().get();
 	  if (tk) {
 	    const double dpt_over_pt = ptError(tk)/tk->pt();
 	    if (dpt_over_pt > dpt_over_pt_largest) dpt_over_pt_largest = dpt_over_pt;
