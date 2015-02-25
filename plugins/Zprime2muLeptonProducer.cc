@@ -156,16 +156,16 @@ void Zprime2muLeptonProducer::embedTriggerMatch(pat::Muon* new_mu, const std::st
 
   if (best < 0)
     return;
-  if (best > -1){
+  
   const pat::TriggerObjectStandAlone& L3_mu = L3[best];
-  L3_matched[best] = 1;
+  //L3_matched[best] = 1;
 
   int id = L3_mu.pdgId();
   new_mu->addUserFloat(ex + "TriggerMatchCharge", -id/abs(id));
   new_mu->addUserFloat(ex + "TriggerMatchPt",     L3_mu.pt());
   new_mu->addUserFloat(ex + "TriggerMatchEta",    L3_mu.eta());
   new_mu->addUserFloat(ex + "TriggerMatchPhi",    L3_mu.phi());
-  }
+  
   }
 }
 
@@ -221,7 +221,7 @@ std::pair<pat::Muon*,int> Zprime2muLeptonProducer::doLepton(const edm::Event& ev
   // the selected refit track.
   
   pat::Muon* new_mu = mu.clone(); //cloneAndSwitchMuonTrack(mu);
-/*
+
   if (new_mu == 0)
     return std::make_pair(new_mu, -1);
 
@@ -234,7 +234,7 @@ std::pair<pat::Muon*,int> Zprime2muLeptonProducer::doLepton(const edm::Event& ev
       new_mu->addUserInt("photon_index", mm[cand].key());
     }    
   }
-*/
+
   // Do our own trigger matching and embed the results. After the next
   // pair of function calls, there will be new user floats:
   // {TriggerMatch, prescaledTriggerMatch} x {Pt, Eta, Phi,
