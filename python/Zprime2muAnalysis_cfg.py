@@ -2,7 +2,7 @@ import FWCore.ParameterSet.Config as cms
 
 process = cms.Process('Zprime2muAnalysis')
 process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(-1))
-process.source = cms.Source('PoolSource', fileNames = cms.untracked.vstring('file:///afs/cern.ch/user/k/klarson/private/miniWork/CMSSW_7_2_0/src/SUSYBSMAnalysis/Zprime2muAnalysis/MyOutputFile.root'))
+process.source = cms.Source('PoolSource', fileNames = cms.untracked.vstring('file:///afs/cern.ch/user/k/klarson/private/miniWork/CMSSW_7_2_0/src/SUSYBSMAnalysis/Zprime2muAnalysis/MyOutputFile.root', '/store/relval/CMSSW_7_2_0/RelValZMM_13/MINIAODSIM/PU25ns_PHYS14_25_V1_Phys14-v2/00000/EA3D8F7C-A059-E411-8858-0025905A6136.root'))
 #'))#/store/relval/CMSSW_7_2_0/RelValZMM_13/MINIAODSIM/PU25ns_PHYS14_25_V1_Phys14-v2/00000/0A3BFB7A-A059-E411-A9C1-0025905A48D6.root'))
 process.options = cms.untracked.PSet(wantSummary = cms.untracked.bool(False))
 
