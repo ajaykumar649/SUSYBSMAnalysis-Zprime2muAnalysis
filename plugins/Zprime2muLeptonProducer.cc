@@ -97,43 +97,59 @@ pat::Electron* Zprime2muLeptonProducer::cloneAndSwitchElectronEnergy(const pat::
 
 pat::Muon* Zprime2muLeptonProducer::cloneAndSwitchMuonTrack(const pat::Muon& muon) const {
   // Muon mass to make a four-vector out of the new track.
-  static const double mass = 0.10566;
-
+  pat::Muon* mu = muon.clone();
+  
   // Start with null track/invalid type before we find the right one.
   reco::TrackRef newTrack;
-  patmuon::TrackType type = patmuon::nTrackTypes;
+  newTrack = muon.tunePMuonBestTrack();
+  
+  if (newTrack.isNull()){
+    std::cout << "No TuneP" << std::endl;
+  //newTrack = muon.muonBestTrack();
+    return 0;
+  //patmuon::TrackType type = patmuon::nTrackTypes;
 
   // If the muon has the track embedded using the UserData mechanism,
   // take it from there first. Otherwise, try to get the track the
   // standard way.
-  if (muon.hasUserData(muon_track_for_momentum))
-    newTrack = patmuon::userDataTrack(muon, muon_track_for_momentum);
-  else {
+  //if (muon.hasUserData(muon_track_for_momentum))
+   // ;//newTrack = patmuon::userDataTrack(muon, muon_track_for_momentum);
+/*else {
     type = patmuon::trackNameToType(muon_track_for_momentum);
     newTrack = patmuon::trackByType(muon, type);
   }
   
   // If we didn't find the appropriate track, indicate failure by a
   // null pointer.
+  
   if (newTrack.isNull())
     return 0;
-
+*/
   // Make up a real Muon from the track so found.
-  reco::Particle::Point vtx(newTrack->vx(), newTrack->vy(), newTrack->vz());
-  reco::Particle::LorentzVector p4;
-  const double p = newTrack->p();
-  p4.SetXYZT(newTrack->px(), newTrack->py(), newTrack->pz(), sqrt(p*p + mass*mass));
+
 
   // The caller will own this pointer and is responsible for deleting
   // it.
-  pat::Muon* mu = muon.clone();
+  }
+  
+  static const double mass = 0.10566;
+  
+  reco::Particle::Point vtx(newTrack->vx(), newTrack->vy(), newTrack->vz());
+  reco::Particle::LorentzVector p4;
+  
+  const double p = newTrack->p();
+  
+  p4.SetXYZT(newTrack->px(), newTrack->py(), newTrack->pz(), sqrt(p*p + mass*mass));  
+  
   mu->setCharge(newTrack->charge());
+  
   mu->setP4(p4);
+  
   mu->setVertex(vtx);
 
   // Store the type code for the track used in the pat::Muon so it can
   // be easily recovered later.
-  mu->addUserInt("trackUsedForMomentum", type);
+  //mu->addUserInt("trackUsedForMomentum", type);
 
   return mu;
 }
@@ -220,7 +236,7 @@ std::pair<pat::Muon*,int> Zprime2muLeptonProducer::doLepton(const edm::Event& ev
   // Copy the input muon, and switch its p4/charge/vtx out for that of
   // the selected refit track.
   
-  pat::Muon* new_mu = mu.clone(); //cloneAndSwitchMuonTrack(mu);
+  pat::Muon* new_mu = cloneAndSwitchMuonTrack(mu);
 
   if (new_mu == 0)
     return std::make_pair(new_mu, -1);

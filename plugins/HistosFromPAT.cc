@@ -71,6 +71,7 @@ class Zprime2muHistosFromPAT : public edm::EDAnalyzer {
   TH1F* NBeamSpot;
   TH1F* NVertices;
   TH1F* NLeptons;
+  TH1F* NMuons;
   TH2F* LeptonSigns;
   TH1F* LeptonEta;
   TH1F* LeptonRap;
@@ -168,7 +169,9 @@ Zprime2muHistosFromPAT::Zprime2muHistosFromPAT(const edm::ParameterSet& cfg)
 
   // Lepton multiplicity.
   NLeptons = fs->make<TH1F>("NLeptons", titlePrefix + "# leptons/event", 10, 0, 10);
-
+  
+  // Number of muons
+  NMuons = fs->make<TH1F>("NMuons", titlePrefix + "# muons", 10, 0, 10);
   // Opposite/like-sign counts.
   LeptonSigns = fs->make<TH2F>("LeptonSigns", titlePrefix + "lepton sign combinations", 6, 0, 6, 13, -6, 7);
   LeptonSigns->GetXaxis()->SetTitle("# leptons");
@@ -187,6 +190,8 @@ Zprime2muHistosFromPAT::Zprime2muHistosFromPAT(const edm::ParameterSet& cfg)
   // Lepton momenta versus pseudorapidity.
   LeptonPVsEta  = fs->make<TProfile>("LeptonPVsEta",   titlePrefix + "p vs. #eta",  100, -6, 6);
   LeptonPtVsEta = fs->make<TProfile>("LeptonPtVsEta",  titlePrefix + "pT vs. #eta", 100, -6, 6);
+  
+  
 
   // Muon specific histos.
 
@@ -244,9 +249,9 @@ Zprime2muHistosFromPAT::Zprime2muHistosFromPAT(const edm::ParameterSet& cfg)
   DileptonPtVsEta = fs->make<TProfile>("DileptonPtVsEta", titlePrefix + "dil. pT vs. #eta", 100, -6, 6);
   
   // Dilepton invariant mass.
-  DileptonMass            = fs->make<TH1F>("DileptonMass",            titlePrefix + "dil. mass", 3000, 0, 3000);
-  DileptonMassWeight      = fs->make<TH1F>("DileptonMassWeight",      titlePrefix + "dil. mass", 3000, 0, 3000);
-  DileptonWithPhotonsMass = fs->make<TH1F>("DileptonWithPhotonsMass", titlePrefix + "res. mass", 3000, 0, 3000);
+  DileptonMass            = fs->make<TH1F>("DileptonMass",            titlePrefix + "dil. mass", 3000, 0, 6000);
+  DileptonMassWeight      = fs->make<TH1F>("DileptonMassWeight",      titlePrefix + "dil. mass", 3000, 0, 6000);
+  DileptonWithPhotonsMass = fs->make<TH1F>("DileptonWithPhotonsMass", titlePrefix + "res. mass", 3000, 0, 6000);
   
   // Plots comparing the daughter lepton momenta.
   DileptonDeltaPt = fs->make<TH1F>("DileptonDeltaPt",  titlePrefix + "dil. |pT^{1}| - |pT^{2}|", 100, -100, 100);
@@ -382,7 +387,14 @@ void Zprime2muHistosFromPAT::fillLeptonHistos(const edm::View<reco::Candidate>& 
     total_q += leptons[i].charge();
     fillLeptonHistos(leptons.refAt(i));
   }
-
+  
+  int nmu = 0;
+  for (size_t i = 0; i < leptons.size(); ++i) {
+    if (abs(leptons[i].pdgId()) == 13){
+      nmu++;
+    }
+  }
+  NMuons->Fill(nmu);
   LeptonSigns->Fill(leptons.size(), total_q);
 }
 
