@@ -49,12 +49,13 @@ private:
   
   
   pat::TriggerObjectStandAloneCollection L3_muons;
-  /*
-  std::vector<int> L3_muons_matched;
-  pat::TriggerObjectStandAlone prescaled_L3_muons;
-  std::vector<int> prescaled_L3_muons_matched;
-  */
+  
+  //std::vector<int> L3_muons_matched;
+  pat::TriggerObjectStandAloneCollection prescaled_L3_muons;
+  //std::vector<int> prescaled_L3_muons_matched;
+  
   std::vector<int> FilterMatched;
+  std::vector<int> PrescaleFilterMatched;
 };
 
 Zprime2muLeptonProducer::Zprime2muLeptonProducer(const edm::ParameterSet& cfg)
@@ -96,6 +97,7 @@ pat::Electron* Zprime2muLeptonProducer::cloneAndSwitchElectronEnergy(const pat::
 }
 
 pat::Muon* Zprime2muLeptonProducer::cloneAndSwitchMuonTrack(const pat::Muon& muon) const {
+  
   // Muon mass to make a four-vector out of the new track.
   pat::Muon* mu = muon.clone();
   
@@ -114,17 +116,13 @@ pat::Muon* Zprime2muLeptonProducer::cloneAndSwitchMuonTrack(const pat::Muon& muo
   // standard way.
   //if (muon.hasUserData(muon_track_for_momentum))
    // ;//newTrack = patmuon::userDataTrack(muon, muon_track_for_momentum);
-/*else {
-    type = patmuon::trackNameToType(muon_track_for_momentum);
-    newTrack = patmuon::trackByType(muon, type);
-  }
+
   
   // If we didn't find the appropriate track, indicate failure by a
   // null pointer.
   
-  if (newTrack.isNull())
-    return 0;
-*/
+
+
   // Make up a real Muon from the track so found.
 
 
@@ -132,6 +130,13 @@ pat::Muon* Zprime2muLeptonProducer::cloneAndSwitchMuonTrack(const pat::Muon& muo
   // it.
   }
   
+  if (!((newTrack.refCore()).isAvailable())){
+    //std::cout << "WOOOOOOOOO" << std::endl;
+    newTrack = muon.muonBestTrack();
+    return 0;
+  }
+  //std::cout << "Good" << std::endl;
+  //std::cout << newTrack->px() << std::endl;
   static const double mass = 0.10566;
   
   reco::Particle::Point vtx(newTrack->vx(), newTrack->vy(), newTrack->vz());
@@ -147,12 +152,56 @@ pat::Muon* Zprime2muLeptonProducer::cloneAndSwitchMuonTrack(const pat::Muon& muo
   
   mu->setVertex(vtx);
 
-  // Store the type code for the track used in the pat::Muon so it can
-  // be easily recovered later.
-  //mu->addUserInt("trackUsedForMomentum", type);
 
   return mu;
 }
+
+/*
+pat::Muon* Zprime2muLeptonProducer::cloneAndSwitchMuonTrack(const pat::Muon& muon) const {
+  // Muon mass to make a four-vector out of the new track.
+  static const double mass = 0.10566;
+
+  // Start with null track/invalid type before we find the right one.
+  reco::TrackRef newTrack;
+  patmuon::TrackType type = patmuon::nTrackTypes;
+  std::cout << "Declare" << std::endl;
+  // If the muon has the track embedded using the UserData mechanism,
+  // take it from there first. Otherwise, try to get the track the
+  // standard way.
+  
+  if (muon.hasUserData(muon_track_for_momentum))
+    newTrack = patmuon::userDataTrack(muon, muon_track_for_momentum);
+  else {
+    type = patmuon::trackNameToType(muon_track_for_momentum);
+    newTrack = patmuon::trackByType(muon, type);
+    //std::cout << type << std::endl;
+  }
+  std::cout << "Track" << std::endl;
+  // If we didn't find the appropriate track, indicate failure by a
+  // null pointer.
+  if (newTrack.isNull())
+    return 0;
+
+  // Make up a real Muon from the track so found.
+  reco::Particle::Point vtx(newTrack->vx(), newTrack->vy(), newTrack->vz());
+  reco::Particle::LorentzVector p4;
+  const double p = newTrack->p();
+  p4.SetXYZT(newTrack->px(), newTrack->py(), newTrack->pz(), sqrt(p*p + mass*mass));
+
+  // The caller will own this pointer and is responsible for deleting
+  // it.
+  pat::Muon* mu = muon.clone();
+  mu->setCharge(newTrack->charge());
+  mu->setP4(p4);
+  mu->setVertex(vtx);
+
+  // Store the type code for the track used in the pat::Muon so it can
+  // be easily recovered later.
+  mu->addUserInt("trackUsedForMomentum", type);
+  //std::cout << type << std::endl;
+  return mu;
+}
+*/
 
 void Zprime2muLeptonProducer::embedTriggerMatch(pat::Muon* new_mu, const std::string& ex, const pat::TriggerObjectStandAloneCollection& L3, std::vector<int>& L3_matched) {
   if (L3.size() > 0){
@@ -238,8 +287,10 @@ std::pair<pat::Muon*,int> Zprime2muLeptonProducer::doLepton(const edm::Event& ev
   
   pat::Muon* new_mu = cloneAndSwitchMuonTrack(mu);
 
-  if (new_mu == 0)
+  if (new_mu == 0){
     return std::make_pair(new_mu, -1);
+    std::cout << "Warning" << std::endl;
+  }  
 
   // Simply store the photon four-vector for now in the muon as a
   // userData.
@@ -257,7 +308,7 @@ std::pair<pat::Muon*,int> Zprime2muLeptonProducer::doLepton(const edm::Event& ev
   // Charge}. (Maybe embed whole candidates later.)
   
   embedTriggerMatch(new_mu, "",          L3_muons,           FilterMatched);
-  //embedTriggerMatch(new_mu, "prescaled", prescaled_L3_muons, prescaled_L3_muons_matched);
+  embedTriggerMatch(new_mu, "prescaled", prescaled_L3_muons, PrescaleFilterMatched);
 
   // Evaluate cuts here with string object selector, and any code that
   // cannot be done in the string object selector (none so far).
@@ -349,6 +400,8 @@ void Zprime2muLeptonProducer::produce(edm::Event& event, const edm::EventSetup& 
     //}
     FilterMatched.resize(trigger_summary_src->size());
     std::fill(FilterMatched.begin(), FilterMatched.end(), 0);
+    PrescaleFilterMatched.resize(trigger_summary_src->size());
+    std::fill(PrescaleFilterMatched.begin(), PrescaleFilterMatched.end(), 0);
     int j = 0;
     //std::cout << "\n === TRIGGER OBJECTS === " << std::endl;
     for (pat::TriggerObjectStandAlone obj : *trigger_summary_src) { // note: not "const &" since we want to call unpackPathNames
@@ -366,6 +419,10 @@ void Zprime2muLeptonProducer::produce(edm::Event& event, const edm::EventSetup& 
 	  if (obj.filterLabels()[h] ==	"hltL3fL1sMu16Eta2p1L1f0L2f16QL3Filtered40Q"){
 	     //FilterMatched[j] = 1;
 	     L3_muons.push_back(obj);
+	  }  
+	  if (obj.filterLabels()[h] ==	"hltL3fL1sMu16Eta2p1L1f0L2f16QL3Filtered24Q"){
+	     //FilterMatched[j] = 1;
+	     prescaled_L3_muons.push_back(obj);
 	  }  
         }
 	/*
@@ -410,21 +467,21 @@ void Zprime2muLeptonProducer::produce(edm::Event& event, const edm::EventSetup& 
     for (pat::MuonCollection::const_iterator mu = muons->begin(), end = muons->end(); mu != end; ++mu)
       muon_eta_phis.push_back(std::make_pair(mu->eta(), mu->phi()));
   }
-/*
+
   // Now make secondary collections of muons using the momentum
   // assignments specified. They will come out as e.g. leptons:tpfms,
   // leptons:picky, ...
   for (size_t i = 0; i < muon_tracks_for_momentum.size(); ++i) {
     // Reset the flags so the matching can be redone.
-    L3_muons_matched.clear();
-    L3_muons_matched.resize(L3_muons.size(), 0);
-    prescaled_L3_muons_matched.clear();
-    prescaled_L3_muons_matched.resize(prescaled_L3_muons.size(), 0);
+    FilterMatched.clear();
+    FilterMatched.resize(L3_muons.size(), 0);
+    PrescaleFilterMatched.clear();
+    PrescaleFilterMatched.resize(prescaled_L3_muons.size(), 0);
 
     muon_track_for_momentum = muon_tracks_for_momentum[i];
     doLeptons<pat::Muon>(event, muon_src, muon_track_for_momentum);
   }
-*/
+
   // And now make the HEEP electron collection, which will be
   // e.g. leptons:electrons.
   doLeptons<pat::Electron>(event, electron_src, "electrons");
