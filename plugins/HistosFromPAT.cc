@@ -332,7 +332,9 @@ void Zprime2muHistosFromPAT::fillOfflineMuonHistos(const pat::Muon* mu) {
   CombIsoNoECAL   ->Fill( iso.sumPt + iso.hadEt + iso.hoEt);
   RelCombIsoNoECAL->Fill((iso.sumPt + iso.hadEt + iso.hoEt) / mu->innerTrack()->pt());
 
-  const reco::TrackRef track = mu->tunePMuonBestTrack();
+  reco::TrackRef track = mu->tunePMuonBestTrack();
+  if (!((track.refCore()).isAvailable())) track = mu->muonBestTrack();
+  //const reco::TrackRef track = patmuon::getPickedTrack(*mu);
   if (track.isAvailable()) {
     Chi2dof->Fill(track->normalizedChi2());
 
@@ -345,7 +347,6 @@ void Zprime2muHistosFromPAT::fillOfflineMuonHistos(const pat::Muon* mu) {
       TrackD0PV->Fill(fabs(track->dxy(vertex->position())));
       TrackDZPV->Fill(fabs(track->dz (vertex->position())));
     }
-    
 
     const reco::HitPattern& hp = track->hitPattern();
     NPxHits->Fill(hp.numberOfValidPixelHits());
@@ -354,14 +355,12 @@ void Zprime2muHistosFromPAT::fillOfflineMuonHistos(const pat::Muon* mu) {
     NMuHits->Fill(hp.numberOfValidMuonHits());
 
     NHits->Fill(hp.numberOfValidHits());
-    NInvalidHits->Fill(hp.numberOfHits(reco::HitPattern::TRACK_HITS) - hp.numberOfValidHits());
     //NInvalidHits->Fill(hp.numberOfHits() - hp.numberOfValidHits());
     
     NPxLayers->Fill(hp.pixelLayersWithMeasurement());
     NStLayers->Fill(hp.stripLayersWithMeasurement());
     NTkLayers->Fill(hp.trackerLayersWithMeasurement());
   }
-  
 }
 
 void Zprime2muHistosFromPAT::fillOfflineElectronHistos(const pat::Electron* lep) {
@@ -386,6 +385,7 @@ void Zprime2muHistosFromPAT::fillLeptonHistos(const edm::View<reco::Candidate>& 
   for (size_t i = 0; i < leptons.size(); ++i) {
     total_q += leptons[i].charge();
     fillLeptonHistos(leptons.refAt(i));
+    std::cout << "Lepton Pt = " << leptons[i].pt()<< std::endl;
   }
   
   int nmu = 0;
@@ -412,7 +412,7 @@ void Zprime2muHistosFromPAT::fillLeptonHistosFromDileptons(const pat::CompositeC
       ++nleptons;
       total_q += dileptonDaughter(*dil, i)->charge();
     }
-
+  
   // These become sanity checks.
   NLeptons->Fill(nleptons);
   LeptonSigns->Fill(nleptons, total_q);
@@ -439,19 +439,27 @@ void Zprime2muHistosFromPAT::fillDileptonHistos(const pat::CompositeCandidate& d
   DileptonMass->Fill(dil.mass());
   DileptonMassWeight->Fill(dil.mass(),_prescaleWeight);
   DileptonWithPhotonsMass->Fill(resonanceP4(dil).mass());
-
+  
   const reco::CandidateBaseRef& lep0 = dileptonDaughter(dil, 0);
   const reco::CandidateBaseRef& lep1 = dileptonDaughter(dil, 1);
 
   if (lep0.isNonnull() && lep1.isNonnull()) {
     DileptonDeltaPt->Fill(fabs(lep0->pt()) - fabs(lep1->pt()));
     DileptonDeltaP ->Fill(fabs(lep0->p())  - fabs(lep1->p()));
-/*
+
     const pat::Muon* mu0 = toConcretePtr<pat::Muon>(lep0);
     const pat::Muon* mu1 = toConcretePtr<pat::Muon>(lep1);
     if (mu0 && mu1) {
-      const reco::Track* tk0 = mu0->tunePMuonBestTrack();
-      const reco::Track* tk1 = mu1->tunePMuonBestTrack();
+      // const reco::Track* tk0 = patmuon::getPickedTrack(*mu0).get();
+      // const reco::Track* tk1 = patmuon::getPickedTrack(*mu1).get();
+      reco::TrackRef ref0 = mu0->tunePMuonBestTrack();
+      if (!((ref0.refCore()).isAvailable())) ref0 = mu0->muonBestTrack();
+      reco::TrackRef ref1 = mu1->tunePMuonBestTrack();
+      if (!((ref1.refCore()).isAvailable())) ref1 = mu1->muonBestTrack();
+
+      const reco::Track* tk0 = &(*ref0);
+      const reco::Track* tk1 = &(*ref1);
+
       if (tk0 && tk1) {
 	DimuonMuonPtErrors->Fill(ptError(tk0), ptError(tk1));
 	DimuonMuonPtErrOverPt->Fill(ptError(tk0)/tk0->pt());
@@ -472,11 +480,10 @@ void Zprime2muHistosFromPAT::fillDileptonHistos(const pat::CompositeCandidate& d
 	}
       }
     }
-   */ 
   }
-
+  
   DileptonDaughterIds->Fill(dil.daughter(0)->pdgId(), dil.daughter(1)->pdgId());
-
+  
   DileptonDaughterDeltaR->Fill(reco::deltaR(*dil.daughter(0), *dil.daughter(1)));
   DileptonDaughterDeltaPhi->Fill(reco::deltaPhi(dil.daughter(0)->phi(), dil.daughter(1)->phi())); 
 
@@ -495,7 +502,7 @@ void Zprime2muHistosFromPAT::fillDileptonHistos(const pat::CompositeCandidate& d
 
 void Zprime2muHistosFromPAT::fillDileptonHistos(const pat::CompositeCandidateCollection& dileptons) {
   NDileptons->Fill(dileptons.size());
-
+  
   pat::CompositeCandidateCollection::const_iterator dil = dileptons.begin(), dile = dileptons.end();
   for ( ; dil != dile; ++dil)
     fillDileptonHistos(*dil);
@@ -530,6 +537,8 @@ void Zprime2muHistosFromPAT::analyze(const edm::Event& event, const edm::EventSe
 
   edm::Handle<edm::View<reco::Candidate> > leptons;
   event.getByLabel(lepton_src, leptons);
+
+  std::cout << " Event Run/Lumi/Event " <<  event.id().run() << " / " << event.luminosityBlock() << " / " << event.id().event() << std::endl;
 
   if (!leptons.isValid())
     edm::LogWarning("LeptonHandleInvalid") << "tried to get " << lepton_src << " with edm::Handle<edm::View<reco::Candidate> > and failed!";
