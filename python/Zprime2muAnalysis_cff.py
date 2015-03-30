@@ -10,13 +10,15 @@ goodDataFilter.HLTPaths = ['goodDataAll'] # can set to just 'goodDataPrimaryVert
 #goodDataFilter.HLTPaths = ['goodDataPrimaryVertexFilter']# can set to just 'goodDataPrimaryVertexFilter', for example
 goodDataFilter.andOr = False # = AND
 
+from SkimMiniAOD_cff import selectedPatMuons
 from MuonPhotonMatch_cff import muonPhotonMatch
 from OurSelectionDec2012_cff import allDimuons, dimuons, loose_cut
 
 leptons = cms.EDProducer('Zprime2muLeptonProducer',
-                         muon_src = cms.InputTag('slimmedMuons'), #JMTBAD changeme after new PAT tuples
+                         muon_src = cms.InputTag('selectedPatMuons'), #JMTBAD changeme after new PAT tuples
                          electron_src = cms.InputTag('slimmedElectrons'),
                          muon_cuts = cms.string(loose_cut),
+                         ##muon_cuts = cms.string('isGlobalMuon && pt>20'),
                          electron_cuts = cms.string('userInt("HEEPId") == 0'),
                          muon_track_for_momentum = cms.string('TunePNew'),
                          muon_photon_match_src = cms.InputTag('muonPhotonMatch'),
@@ -27,13 +29,19 @@ leptons = cms.EDProducer('Zprime2muLeptonProducer',
     			 prescales = cms.InputTag("patTrigger"),
                          )
 
-Zprime2muAnalysisSequence = cms.Sequence(muonPhotonMatch * leptons * allDimuons * dimuons)
+
+#from PhysicsTools.PatAlgos.selectionLayer1.muonSelector_cfi import*
+#selectedPatMuons.src = cms.InputTag('slimmedMuons')
+#selectedPatMuons.cut = cms.InputTag('isGlobalMuon && pt>20')
+Zprime2muAnalysisSequence = cms.Sequence(selectedPatMuons * muonPhotonMatch * leptons * allDimuons * dimuons)
+#Zprime2muAnalysisSequence = cms.Sequence(muonPhotonMatch * leptons * allDimuons * dimuons)
 
 def rec_levels(process, new_track_types):
     process.leptons.muon_tracks_for_momentum = cms.vstring(*new_track_types)
-    process.Zprime2muAnalysisSequence = cms.Sequence(process.muonPhotonMatch * process.leptons)
-    process.Zprime2muAnalysisSequencePlain = cms.Sequence(process.muonPhotonMatch * process.leptons * process.allDimuons * process.dimuons)
-
+    #process.Zprime2muAnalysisSequence = cms.Sequence(process.muonPhotonMatch * process.leptons)
+    #process.Zprime2muAnalysisSequencePlain = cms.Sequence(process.muonPhotonMatch * process.leptons * process.allDimuons * process.dimuons)
+    process.Zprime2muAnalysisSequence = cms.Sequence(process.selectedPatMuons *process.muonPhotonMatch * process.leptons)
+    process.Zprime2muAnalysisSequencePlain = cms.Sequence(process.selectedPatMuons *process.muonPhotonMatch * process.leptons * process.allDimuons * process.dimuons)
     for t in new_track_types:
         ad = process.allDimuons.clone()
         label = 'leptons:%s' % t
