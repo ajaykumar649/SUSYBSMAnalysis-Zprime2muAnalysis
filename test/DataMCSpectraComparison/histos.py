@@ -3,10 +3,48 @@
 import sys, os, FWCore.ParameterSet.Config as cms
 from SUSYBSMAnalysis.Zprime2muAnalysis.Zprime2muAnalysis_cff import switch_hlt_process_name
 from SUSYBSMAnalysis.Zprime2muAnalysis.Zprime2muAnalysis_cfg import process
-#process.source.fileNames =['file:./pat.root']
-process.source.fileNames =['/store/user/rradogna/DYJetsToEEMuMu_M-9500_13TeV-madgraph/datamc_dy9500/a8881ceec144e0dfafbb7486d1b7f8e6/pat_10_1_pcu.root',
-      '/store/user/rradogna/DYJetsToEEMuMu_M-9500_13TeV-madgraph/datamc_dy9500/a8881ceec144e0dfafbb7486d1b7f8e6/pat_9_1_T1U.root',]
-#process.source.fileNames=['/store/relval/CMSSW_7_1_0_pre4_AK4/RelValProdTTbar/AODSIM/START71_V1-v2/00000/7A3637AA-28B5-E311-BC25-003048678B94.root']
+#process.source.fileNames=['root://cms-xrd-global.cern.ch//store/mc/Phys14DR/DYJetsToEEMuMu_M-120To200_13TeV-madgraph/MINIAODSIM/PU20bx25_PHYS14_25_V1-v2/10000/0626BCFB-C27C-E411-BFCF-002590747DDC.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/DYJetsToEEMuMu_M-120To200_13TeV-madgraph/MINIAODSIM/PU20bx25_PHYS14_25_V1-v2/10000/C645CDFB-C27C-E411-A3B0-002590747DDC.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/DYJetsToEEMuMu_M-1400To2300_13TeV-madgraph/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/12B916AF-CE73-E411-8419-002590747DE2.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/DYJetsToEEMuMu_M-200To400_13TeV-madgraph/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/10000/88C136C9-C073-E411-B945-E0CB4E5536BE.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/DYJetsToEEMuMu_M-2300To3500_13TeV-madgraph/MINIAODSIM/PU20bx25_PHYS14_25_V1-v2/00000/0AAFEA47-FD76-E411-AC79-20CF30561726.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/DYJetsToEEMuMu_M-3500To4500_13TeV-madgraph/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/AA40FD5D-CE73-E411-8344-20CF3019DF11.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/DYJetsToEEMuMu_M-400To800_13TeV-madgraph/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/6C63A3C9-2972-E411-9997-00266CFFBCD0.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/DYJetsToEEMuMu_M-4500To6000_13TeV-madgraph/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/B62B0696-2670-E411-A7DA-003048FFCB6A.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/DYJetsToEEMuMu_M-4500To6000_13TeV-madgraph/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/D20E3F90-2670-E411-B1EC-0025905A60AA.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/DYJetsToEEMuMu_M-6000To7500_13TeV-madgraph/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/10000/08B2ECF8-C275-E411-919A-001E673972E7.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/DYJetsToEEMuMu_M-7500To8500_13TeV-madgraph/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/48E742E6-CF73-E411-B2D7-002590D0B072.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/DYJetsToEEMuMu_M-7500To8500_13TeV-madgraph/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/10000/0E143E69-BE73-E411-99FC-E0CB4EA0A8E0.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/DYJetsToEEMuMu_M-800To1400_13TeV-madgraph/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/10000/3AEB9038-A66B-E411-9DD0-00A0D1EEF328.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/DYJetsToEEMuMu_M-8500To9500_13TeV-madgraph/MINIAODSIM/PU20bx25_PHYS14_25_V1-v2/00000/B0441204-FF78-E411-A4CB-002618FDA216.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/DYJetsToEEMuMu_M-9500_13TeV-madgraph/MINIAODSIM/PU20bx25_PHYS14_25_V1-v2/00000/66767358-FA76-E411-956B-00259073E42E.root']
+
+#process.source.fileNames=['root://cms-xrd-global.cern.ch//store/mc/Phys14DR/TT_Tune4C_13TeV-pythia8-tauola/MINIAODSIM/PU20bx25_tsg_PHYS14_25_V1-v1/00000/007B37D4-8B70-E411-BC2D-0025905A6066.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/TT_Tune4C_13TeV-pythia8-tauola/MINIAODSIM/PU20bx25_tsg_PHYS14_25_V1-v1/00000/06843FC5-8370-E411-9B8C-0025905A60AA.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/TT_Tune4C_13TeV-pythia8-tauola/MINIAODSIM/PU20bx25_tsg_PHYS14_25_V1-v1/00000/0A867F71-8C70-E411-9CC9-0025905A48D6.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/TT_Tune4C_13TeV-pythia8-tauola/MINIAODSIM/PU20bx25_tsg_PHYS14_25_V1-v1/00000/0C1D0A70-8870-E411-BAB1-0025905A612C.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/TT_Tune4C_13TeV-pythia8-tauola/MINIAODSIM/PU20bx25_tsg_PHYS14_25_V1-v1/00000/0EB35257-8470-E411-A458-0025905B85B2.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/TT_Tune4C_13TeV-pythia8-tauola/MINIAODSIM/PU20bx25_tsg_PHYS14_25_V1-v1/00000/10D92E71-8470-E411-8DE2-0025905A60B8.root']
+
+#working
+#process.source.fileNames=['/store/user/federica/MINIAOD/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/ZprimeToMuMu_M-5000_PU20BX25/150326_104035/0000/miniaod_1.root',
+ #                          'root://cms-xrd-global.cern.ch//store/user/federica/MINIAOD/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/ZprimeToMuMu_M-5000_PU20BX25/150326_104035/0000/miniaod_10.root',
+  #                        'root://cms-xrd-global.cern.ch//store/user/federica/MINIAOD/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/ZprimeToMuMu_M-5000_PU20BX25/150326_104035/0000/miniaod_2.root',
+   #                       'root://cms-xrd-global.cern.ch//store/user/federica/MINIAOD/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/ZprimeToMuMu_M-5000_PU20BX25/150326_104035/0000/miniaod_3.root',
+    #                       'root://cms-xrd-global.cern.ch//store/user/federica/MINIAOD/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/ZprimeToMuMu_M-5000_PU20BX25/150326_104035/0000/miniaod_4.root',
+     #                      'root://cms-xrd-global.cern.ch//store/user/federica/MINIAOD/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/ZprimeToMuMu_M-5000_PU20BX25/150326_104035/0000/miniaod_5.root',
+      #                     'root://cms-xrd-global.cern.ch//store/user/federica/MINIAOD/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/ZprimeToMuMu_M-5000_PU20BX25/150326_104035/0000/miniaod_6.root',
+       #                    'root://cms-xrd-global.cern.ch//store/user/federica/MINIAOD/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/ZprimeToMuMu_M-5000_PU20BX25/150326_104035/0000/miniaod_7.root',
+        #                   'root://cms-xrd-global.cern.ch//store/user/federica/MINIAOD/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/ZprimeToMuMu_M-5000_PU20BX25/150326_104035/0000/miniaod_8.root',
+         #                  'root://cms-xrd-global.cern.ch//store/user/federica/MINIAOD/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/ZprimeToMuMu_M-5000_PU20BX25/150326_104035/0000/miniaod_9.root']
+
+process.source.fileNames =['/store/mc/Phys14DR/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/MINIAODSIM/PU20bx25_tsg_PHYS14_25_V1-v1/00000/788396C0-9D6F-E411-97DF-002590494E34.root',
+                           '/store/mc/Phys14DR/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/MINIAODSIM/PU20bx25_tsg_PHYS14_25_V1-v1/00000/3023C1A6-D56F-E411-B210-002590AC4C08.root',
+                           '/store/mc/Phys14DR/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/MINIAODSIM/PU20bx25_tsg_PHYS14_25_V1-v1/00000/90575C8B-D56F-E411-A39B-0025904B1420.root',
+                           '/store/mc/Phys14DR/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/MINIAODSIM/PU20bx25_tsg_PHYS14_25_V1-v1/00000/FCEF82CA-9D6F-E411-A2FC-002481E0D5CE.root',
+                           '/store/mc/Phys14DR/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/MINIAODSIM/PU20bx25_tsg_PHYS14_25_V1-v1/10000/44B8EEE7-9A6F-E411-8858-002590DB0640.root',
+                           '/store/mc/Phys14DR/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/MINIAODSIM/PU20bx25_tsg_PHYS14_25_V1-v1/10000/F03F87D0-9A6F-E411-8BC4-00266CFFA5E0.root']
+
 process.maxEvents.input = -1
 from SUSYBSMAnalysis.Zprime2muAnalysis.hltTriggerMatch_cfi import trigger_match, prescaled_trigger_match, trigger_paths, prescaled_trigger_paths, overall_prescale, offline_pt_threshold, prescaled_offline_pt_threshold
 
@@ -17,10 +55,14 @@ process.load('SUSYBSMAnalysis.Zprime2muAnalysis.PrescaleToCommon_cff')
 process.PrescaleToCommon.trigger_paths = prescaled_trigger_paths
 process.PrescaleToCommon.overall_prescale = overall_prescale
 
+process.load('SUSYBSMAnalysis.Zprime2muAnalysis.goodData_cff')
+process.load('HLTrigger.special.hltPhysicsDeclared_cfi')
+process.hltPhysicsDeclared.L1GtReadoutRecordTag = 'gtDigis'
+#process.goodDataPrimaryVertexFilter = cms.path(process.primaryVertexFilter)
 # The histogramming module that will be cloned multiple times below
 # for making histograms with different cut/dilepton combinations.
 from SUSYBSMAnalysis.Zprime2muAnalysis.HistosFromPAT_cfi import HistosFromPAT
-HistosFromPAT.leptonsFromDileptons = True
+HistosFromPAT.leptonsFromDileptons = False ## True
 
 # These modules define the basic selection cuts. For the monitoring
 # sets below, we don't need to define a whole new module, since they
@@ -53,15 +95,15 @@ dils = [
 # that doesn't have a trigger match, need to re-add a hltHighLevel
 # filter somewhere below.
 cuts = {
-#    'VBTF'     : VBTFSelection,
-#    'OurOld'   : OurSelectionOld,
-#    'OurEPS'   : OurSelection2011EPS,
+    #    'VBTF'     : VBTFSelection,
+    #    'OurOld'   : OurSelectionOld,
+    #    'OurEPS'   : OurSelection2011EPS,
     #'OurNew'   : OurSelectionNew,
     'Our2012'  : OurSelectionDec2012,
     #'OurNoIso' : OurSelectionDec2012,
     #'EmuVeto'  : OurSelectionDec2012,
     'Simple'   : OurSelectionDec2012, # The selection cuts in the module listed here are ignored below.
-#    'VBTFMuPrescaled' : VBTFSelection,
+    #    'VBTFMuPrescaled' : VBTFSelection,
     #'OurMuPrescaledNew'  : OurSelectionNew,
     #'OurMuPrescaled2012' : OurSelectionDec2012 #doesn't work :( #to be checked 
     }
@@ -71,7 +113,7 @@ cuts = {
 for cut_name, Selection in cuts.iteritems():
     # Keep track of modules to put in the path for this set of cuts.
     path_list = []
-
+    
     # Clone the LeptonProducer to make leptons with the set of cuts
     # we're doing here flagged.  I.e., muon_cuts in LeptonProducer
     # just marks each muon with a userInt "cutFor" that is 0 if it
@@ -81,7 +123,8 @@ for cut_name, Selection in cuts.iteritems():
     # present.
     leptons_name = cut_name + 'Leptons'
     if cut_name == 'Simple':
-        muon_cuts = ''
+       ### muon_cuts = 'isGlobalMuon && pt > 20.'
+        muon_cuts = '' ## this is a cut but it's applyed only at trigger level
     elif 'MuPrescaled' in cut_name:
         muon_cuts = Selection.loose_cut.replace('pt > %s' % offline_pt_threshold, 'pt > %s' % prescaled_offline_pt_threshold)
     else:
@@ -89,9 +132,9 @@ for cut_name, Selection in cuts.iteritems():
     leptons = process.leptons.clone(muon_cuts = muon_cuts)
     if cut_name == 'EmuVeto':
         leptons.electron_muon_veto_dR = 0.1
-    # Keep using old TuneP for past selections
+        # Keep using old TuneP for past selections
     if 'Dec2012' not in Selection.__file__:
-        leptons.muon_track_for_momentum = cms.string('TuneP')
+        leptons.muon_track_for_momentum = cms.string('TunePNew')
     setattr(process, leptons_name, leptons)
     path_list.append(leptons)
 
@@ -148,10 +191,10 @@ for cut_name, Selection in cuts.iteritems():
     pathname = 'path' + cut_name
     pobj = process.muonPhotonMatch * reduce(lambda x,y: x*y, path_list)
     if 'VBTF' not in cut_name and cut_name != 'Simple':
-        pobj = process.goodDataFilter * pobj
+        pobj = pobj#process.hltPhysicsDeclared * process.primaryVertexFilter * pobj
     if 'MuPrescaled' in cut_name:
         pobj = process.PrescaleToCommon * pobj
-    path = cms.Path(pobj)
+    path = cms.Path(process.selectedPatMuons*pobj)
     setattr(process, pathname, path)
 
 def ntuplify(process, fill_gen_info=False):
@@ -166,7 +209,7 @@ def ntuplify(process, fill_gen_info=False):
         from SUSYBSMAnalysis.Zprime2muAnalysis.HardInteraction_cff import hardInteraction
         process.SimpleNtupler.hardInteraction = hardInteraction
 
-    process.pathSimple *= process.SimpleNtupler * process.SimpleNtuplerEmu
+    ##process.pathSimple *= process.SimpleNtupler * process.SimpleNtuplerEmu
 
 def printify(process):
     process.MessageLogger.categories.append('PrintEvent')
@@ -176,7 +219,8 @@ def printify(process):
     process.pathSimple *= process.triggerSummaryAnalyzerAOD
 
     process.PrintOriginalMuons = cms.EDAnalyzer('PrintEvent', muon_src = cms.InputTag('cleanPatMuonsTriggerMatch'), trigger_results_src = cms.InputTag('TriggerResults','','HLT'))
-    process.pathSimple *= process.PrintOriginalMuons
+    #process.PrintOriginalMuons = cms.EDAnalyzer('PrintEvent', muon_src = cms.InputTag('selectedPatMuons'))
+    #process.pathSimple *= process.PrintOriginalMuons
 
     pe = process.PrintEventSimple = cms.EDAnalyzer('PrintEvent', dilepton_src = cms.InputTag('SimpleMuonsPlusMuonsMinus'))
     process.pathSimple *= process.PrintEventSimple
@@ -246,6 +290,10 @@ if 'gogo' in sys.argv:
     process.source.fileNames = [filename]
     from SUSYBSMAnalysis.Zprime2muAnalysis.cmsswtools import set_events_to_process
     set_events_to_process(process, [(run, event)])
+
+f = file('outfileMINIAOD_cut', 'w')
+f.write(process.dumpPython())
+f.close()
 
 if __name__ == '__main__' and 'submit' in sys.argv:
     crab_cfg = '''
