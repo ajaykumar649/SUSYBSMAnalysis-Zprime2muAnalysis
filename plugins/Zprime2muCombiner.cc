@@ -46,8 +46,20 @@ struct Zprime2muPairSelector {
       return electron_ok(c2) && loose(c1) && tight(c1);
 
     //printf("in mumu Zprime2muPairSelector %s with c1 pt %f c2 pt %f  loose1 %i loose2 %i tight1 %i tight2 %i\n", module_label.c_str(), c1.pt(), c2.pt(), loose(c1), loose(c2), tight(c1), tight(c2));
+    /*
+    std::cout << (loose(c1) && loose(c2) && (tight(c1) || tight(c2))) << std::endl;
+    if (!(loose(c1) && loose(c2) && (tight(c1) || tight(c2)))){
+    const pat::Muon& cm1 = static_cast<const pat::Muon&>(c1);
+    const pat::Muon& cm2 = static_cast<const pat::Muon&>(c2);
+    if (!cm1.hasUserFloat("TriggerMatchPt")){
+      std::cout << cm1.userFloat("TriggerMatchPt") << " c1 " << cm1.userFloat("TriggerMatchEta");
+    }
+    if (!cm1.hasUserFloat("TriggerMatchPt")){ 
+      std::cout << cm2.userFloat("TriggerMatchPt") << " c2 " << cm2.userFloat("TriggerMatchEta");
+    }  
+    }*/
     return loose(c1) && loose(c2) && (tight(c1) || tight(c2));
-    std::cout << "testing" << std::endl;
+    
   }
 };
 

@@ -28,9 +28,9 @@
 #include "SUSYBSMAnalysis/Zprime2muAnalysis/src/ToConcrete.h"
 #include "SUSYBSMAnalysis/Zprime2muAnalysis/src/TrackUtilities.h"
 
-class Zprime2muHistosFromPAT : public edm::EDAnalyzer {
+class Zprime2muHistosFromPAT_AOD : public edm::EDAnalyzer {
  public:
-  explicit Zprime2muHistosFromPAT(const edm::ParameterSet&);
+  explicit Zprime2muHistosFromPAT_AOD(const edm::ParameterSet&);
   void analyze(const edm::Event&, const edm::EventSetup&);
 
  private:
@@ -133,7 +133,7 @@ class Zprime2muHistosFromPAT : public edm::EDAnalyzer {
   TH2F* DimuonMassVertexConstrainedError;
 };
 
-Zprime2muHistosFromPAT::Zprime2muHistosFromPAT(const edm::ParameterSet& cfg)
+Zprime2muHistosFromPAT_AOD::Zprime2muHistosFromPAT_AOD(const edm::ParameterSet& cfg)
   : lepton_src(cfg.getParameter<edm::InputTag>("lepton_src")),
     dilepton_src(cfg.getParameter<edm::InputTag>("dilepton_src")),
     leptonsFromDileptons(cfg.getParameter<bool>("leptonsFromDileptons")),
@@ -278,7 +278,7 @@ Zprime2muHistosFromPAT::Zprime2muHistosFromPAT(const edm::ParameterSet& cfg)
   DimuonMassVertexConstrainedError = fs->make<TH2F>("DimuonMassVertexConstrainedError", titlePrefix + "dimu. vertex-constrained mass error vs. mass", 100, 0, 3000, 100, 0, 400);
 }
 
-void Zprime2muHistosFromPAT::getBSandPV(const edm::Event& event) {
+void Zprime2muHistosFromPAT_AOD::getBSandPV(const edm::Event& event) {
   // We store these as bare pointers. Should find better way, but
   // don't want to pass them around everywhere...
   edm::Handle<reco::BeamSpot> hbs;
@@ -300,7 +300,7 @@ void Zprime2muHistosFromPAT::getBSandPV(const edm::Event& event) {
   NVertices->Fill(vertex_count);
 }
 
-void Zprime2muHistosFromPAT::fillBasicLeptonHistos(const reco::CandidateBaseRef& lep) {
+void Zprime2muHistosFromPAT_AOD::fillBasicLeptonHistos(const reco::CandidateBaseRef& lep) {
   LeptonEta->Fill(lep->eta());
   LeptonRap->Fill(lep->rapidity());
   LeptonPhi->Fill(lep->phi());
@@ -313,7 +313,7 @@ void Zprime2muHistosFromPAT::fillBasicLeptonHistos(const reco::CandidateBaseRef&
   LeptonPVsEta ->Fill(lep->eta(), lep->p());
 }
 
-void Zprime2muHistosFromPAT::fillOfflineMuonHistos(const pat::Muon* mu) {
+void Zprime2muHistosFromPAT_AOD::fillOfflineMuonHistos(const pat::Muon* mu) {
   const reco::MuonIsolation& iso = mu->isolationR03();
   IsoSumPt   ->Fill(iso.sumPt);
   RelIsoSumPt->Fill(iso.sumPt / mu->innerTrack()->pt());
@@ -327,8 +327,7 @@ void Zprime2muHistosFromPAT::fillOfflineMuonHistos(const pat::Muon* mu) {
   CombIsoNoECAL   ->Fill( iso.sumPt + iso.hadEt + iso.hoEt);
   RelCombIsoNoECAL->Fill((iso.sumPt + iso.hadEt + iso.hoEt) / mu->innerTrack()->pt());
 
-  reco::TrackRef track = mu->tunePMuonBestTrack();
-  if (!((track.refCore()).isAvailable())) track = mu->muonBestTrack();
+  const reco::TrackRef track = patmuon::getPickedTrack(*mu);
   if (track.isAvailable()) {
     Chi2dof->Fill(track->normalizedChi2());
 
@@ -358,11 +357,11 @@ void Zprime2muHistosFromPAT::fillOfflineMuonHistos(const pat::Muon* mu) {
   }
 }
 
-void Zprime2muHistosFromPAT::fillOfflineElectronHistos(const pat::Electron* lep) {
+void Zprime2muHistosFromPAT_AOD::fillOfflineElectronHistos(const pat::Electron* lep) {
   // Can add electron quantities here.
 }
 
-void Zprime2muHistosFromPAT::fillLeptonHistos(const reco::CandidateBaseRef& lep) {
+void Zprime2muHistosFromPAT_AOD::fillLeptonHistos(const reco::CandidateBaseRef& lep) {
   fillBasicLeptonHistos(lep);
   
   const pat::Muon* muon = toConcretePtr<pat::Muon>(lep);
@@ -372,7 +371,7 @@ void Zprime2muHistosFromPAT::fillLeptonHistos(const reco::CandidateBaseRef& lep)
   if (electron) fillOfflineElectronHistos(electron);
 }
 
-void Zprime2muHistosFromPAT::fillLeptonHistos(const edm::View<reco::Candidate>& leptons) {
+void Zprime2muHistosFromPAT_AOD::fillLeptonHistos(const edm::View<reco::Candidate>& leptons) {
   NLeptons->Fill(leptons.size());
 
  // JMTBAD this should use leptonsPassingCuts or whatever
@@ -385,7 +384,7 @@ void Zprime2muHistosFromPAT::fillLeptonHistos(const edm::View<reco::Candidate>& 
   LeptonSigns->Fill(leptons.size(), total_q);
 }
 
-void Zprime2muHistosFromPAT::fillLeptonHistosFromDileptons(const pat::CompositeCandidateCollection& dileptons) {
+void Zprime2muHistosFromPAT_AOD::fillLeptonHistosFromDileptons(const pat::CompositeCandidateCollection& dileptons) {
   int nleptons = 0;
   int total_q = 0;
 
@@ -405,7 +404,7 @@ void Zprime2muHistosFromPAT::fillLeptonHistosFromDileptons(const pat::CompositeC
   LeptonSigns->Fill(nleptons, total_q);
 }
 
-void Zprime2muHistosFromPAT::fillDileptonHistos(const pat::CompositeCandidate& dil) {
+void Zprime2muHistosFromPAT_AOD::fillDileptonHistos(const pat::CompositeCandidate& dil) {
   if (dbg_tree) {
     dbg_t.mass = dil.mass();
     dbg_t.id = dil.daughter(0)->pdgId() + dil.daughter(1)->pdgId();
@@ -437,13 +436,8 @@ void Zprime2muHistosFromPAT::fillDileptonHistos(const pat::CompositeCandidate& d
     const pat::Muon* mu0 = toConcretePtr<pat::Muon>(lep0);
     const pat::Muon* mu1 = toConcretePtr<pat::Muon>(lep1);
     if (mu0 && mu1) {
-      //const reco::Track* tk0 = patmuon::getPickedTrack(*mu0).get();
-      reco::TrackRef ref0 = mu0->tunePMuonBestTrack();
-      if (!((ref0.refCore()).isAvailable())) ref0 = mu0->muonBestTrack();
-      reco::TrackRef ref1 = mu1->tunePMuonBestTrack();
-      if (!((ref1.refCore()).isAvailable())) ref1 = mu1->muonBestTrack();
-      const reco::Track* tk0 = &(*ref0);
-      const reco::Track* tk1 = &(*ref1);
+      const reco::Track* tk0 = patmuon::getPickedTrack(*mu0).get();
+      const reco::Track* tk1 = patmuon::getPickedTrack(*mu1).get();
       if (tk0 && tk1) {
 	DimuonMuonPtErrors->Fill(ptError(tk0), ptError(tk1));
 	DimuonMuonPtErrOverPt->Fill(ptError(tk0)/tk0->pt());
@@ -484,7 +478,7 @@ void Zprime2muHistosFromPAT::fillDileptonHistos(const pat::CompositeCandidate& d
   }
 }
 
-void Zprime2muHistosFromPAT::fillDileptonHistos(const pat::CompositeCandidateCollection& dileptons) {
+void Zprime2muHistosFromPAT_AOD::fillDileptonHistos(const pat::CompositeCandidateCollection& dileptons) {
   NDileptons->Fill(dileptons.size());
 
   pat::CompositeCandidateCollection::const_iterator dil = dileptons.begin(), dile = dileptons.end();
@@ -492,7 +486,7 @@ void Zprime2muHistosFromPAT::fillDileptonHistos(const pat::CompositeCandidateCol
     fillDileptonHistos(*dil);
 }
 
-void Zprime2muHistosFromPAT::analyze(const edm::Event& event, const edm::EventSetup& setup) {
+void Zprime2muHistosFromPAT_AOD::analyze(const edm::Event& event, const edm::EventSetup& setup) {
   if (dbg_tree) {
     memset(&dbg_t, 0, sizeof(debug_tree_t));
     dbg_t.run = event.id().run();
@@ -542,4 +536,4 @@ void Zprime2muHistosFromPAT::analyze(const edm::Event& event, const edm::EventSe
   }
 }
 
-DEFINE_FWK_MODULE(Zprime2muHistosFromPAT);
+DEFINE_FWK_MODULE(Zprime2muHistosFromPAT_AOD);
