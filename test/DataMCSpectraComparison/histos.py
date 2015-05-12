@@ -2,9 +2,9 @@
 
 import sys, os, FWCore.ParameterSet.Config as cms
 from SUSYBSMAnalysis.Zprime2muAnalysis.Zprime2muAnalysis_cff import switch_hlt_process_name
-from SUSYBSMAnalysis.Zprime2muAnalysis.Zprime2muAnalysis_cfg import process
+from SUSYBSMAnalysis.Zprime2muAnalysis.Zprime2muAnalysis_cfg import process, flag
 #process.source.fileNames=['root://cms-xrd-global.cern.ch//store/mc/Phys14DR/DYJetsToEEMuMu_M-120To200_13TeV-madgraph/MINIAODSIM/PU20bx25_PHYS14_25_V1-v2/10000/0626BCFB-C27C-E411-BFCF-002590747DDC.root',
-#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/DYJetsToEEMuMu_M-120To200_13TeV-madgraph/MINIAODSIM/PU20bx25_PHYS14_25_V1-v2/10000/C645CDFB-C27C-E411-A3B0-002590747DDC.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/DYJetsToEEMuMu_M-120To200_13TeV-madgraph/MINIAODSIM/PU20bx25_PHYS14_25_V1-v2/10000/C645CDFB-C27C-E411-A3B0-002590747DDC.root']
 #'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/DYJetsToEEMuMu_M-1400To2300_13TeV-madgraph/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/12B916AF-CE73-E411-8419-002590747DE2.root',
 #'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/DYJetsToEEMuMu_M-200To400_13TeV-madgraph/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/10000/88C136C9-C073-E411-B945-E0CB4E5536BE.root',
 #'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/DYJetsToEEMuMu_M-2300To3500_13TeV-madgraph/MINIAODSIM/PU20bx25_PHYS14_25_V1-v2/00000/0AAFEA47-FD76-E411-AC79-20CF30561726.root',
@@ -26,24 +26,97 @@ from SUSYBSMAnalysis.Zprime2muAnalysis.Zprime2muAnalysis_cfg import process
 #'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/TT_Tune4C_13TeV-pythia8-tauola/MINIAODSIM/PU20bx25_tsg_PHYS14_25_V1-v1/00000/0EB35257-8470-E411-A458-0025905B85B2.root',
 #'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/TT_Tune4C_13TeV-pythia8-tauola/MINIAODSIM/PU20bx25_tsg_PHYS14_25_V1-v1/00000/10D92E71-8470-E411-8DE2-0025905A60B8.root']
 
-#working
-#process.source.fileNames=['/store/user/federica/MINIAOD/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/ZprimeToMuMu_M-5000_PU20BX25/150326_104035/0000/miniaod_1.root',
- #                          'root://cms-xrd-global.cern.ch//store/user/federica/MINIAOD/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/ZprimeToMuMu_M-5000_PU20BX25/150326_104035/0000/miniaod_10.root',
-  #                        'root://cms-xrd-global.cern.ch//store/user/federica/MINIAOD/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/ZprimeToMuMu_M-5000_PU20BX25/150326_104035/0000/miniaod_2.root',
-   #                       'root://cms-xrd-global.cern.ch//store/user/federica/MINIAOD/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/ZprimeToMuMu_M-5000_PU20BX25/150326_104035/0000/miniaod_3.root',
-    #                       'root://cms-xrd-global.cern.ch//store/user/federica/MINIAOD/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/ZprimeToMuMu_M-5000_PU20BX25/150326_104035/0000/miniaod_4.root',
-     #                      'root://cms-xrd-global.cern.ch//store/user/federica/MINIAOD/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/ZprimeToMuMu_M-5000_PU20BX25/150326_104035/0000/miniaod_5.root',
-      #                     'root://cms-xrd-global.cern.ch//store/user/federica/MINIAOD/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/ZprimeToMuMu_M-5000_PU20BX25/150326_104035/0000/miniaod_6.root',
-       #                    'root://cms-xrd-global.cern.ch//store/user/federica/MINIAOD/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/ZprimeToMuMu_M-5000_PU20BX25/150326_104035/0000/miniaod_7.root',
-        #                   'root://cms-xrd-global.cern.ch//store/user/federica/MINIAOD/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/ZprimeToMuMu_M-5000_PU20BX25/150326_104035/0000/miniaod_8.root',
-         #                  'root://cms-xrd-global.cern.ch//store/user/federica/MINIAOD/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/ZprimeToMuMu_M-5000_PU20BX25/150326_104035/0000/miniaod_9.root']
+#process.source.fileNames=['root://cms-xrd-global.cern.ch//store/mc/Phys14DR/ZZTo4L_Tune4C_13TeV-powheg-pythia8/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/04CD96C9-E269-E411-9D64-00266CF9ADA0.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/ZZTo4L_Tune4C_13TeV-powheg-pythia8/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/10A409C9-E269-E411-8E48-00266CFAE8D0.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/ZZTo4L_Tune4C_13TeV-powheg-pythia8/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/1C0E56C5-E269-E411-BCDD-00266CF9BE6C.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/ZZTo4L_Tune4C_13TeV-powheg-pythia8/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/22C728CF-E269-E411-8850-00A0D1EE8EE0.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/ZZTo4L_Tune4C_13TeV-powheg-pythia8/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/241933C6-E269-E411-B532-7845C4FC3A19.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/ZZTo4L_Tune4C_13TeV-powheg-pythia8/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/7EEFB973-E269-E411-9407-848F69FD2949.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/ZZTo4L_Tune4C_13TeV-powheg-pythia8/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/829AAAC9-E269-E411-9EAE-00266CFAEA68.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/ZZTo4L_Tune4C_13TeV-powheg-pythia8/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/845BC5C8-E269-E411-B72C-00266CF9BBE4.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/ZZTo4L_Tune4C_13TeV-powheg-pythia8/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/8606AA22-E869-E411-A156-848F69FD4ED1.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/ZZTo4L_Tune4C_13TeV-powheg-pythia8/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/86B65CCA-E269-E411-A4BA-848F69FD2955.root'
+#]
 
-process.source.fileNames =['/store/mc/Phys14DR/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/MINIAODSIM/PU20bx25_tsg_PHYS14_25_V1-v1/00000/788396C0-9D6F-E411-97DF-002590494E34.root',
-                           '/store/mc/Phys14DR/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/MINIAODSIM/PU20bx25_tsg_PHYS14_25_V1-v1/00000/3023C1A6-D56F-E411-B210-002590AC4C08.root',
-                           '/store/mc/Phys14DR/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/MINIAODSIM/PU20bx25_tsg_PHYS14_25_V1-v1/00000/90575C8B-D56F-E411-A39B-0025904B1420.root',
-                           '/store/mc/Phys14DR/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/MINIAODSIM/PU20bx25_tsg_PHYS14_25_V1-v1/00000/FCEF82CA-9D6F-E411-A2FC-002481E0D5CE.root',
-                           '/store/mc/Phys14DR/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/MINIAODSIM/PU20bx25_tsg_PHYS14_25_V1-v1/10000/44B8EEE7-9A6F-E411-8858-002590DB0640.root',
-                           '/store/mc/Phys14DR/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/MINIAODSIM/PU20bx25_tsg_PHYS14_25_V1-v1/10000/F03F87D0-9A6F-E411-8BC4-00266CFFA5E0.root']
+#process.source.fileNames=['root://cms-xrd-global.cern.ch//store/mc/Phys14DR/WZJetsTo3LNu_Tune4C_13TeV-madgraph-tauola/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/484D51C6-2673-E411-8AB0-001E67398412.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/WZJetsTo3LNu_Tune4C_13TeV-madgraph-tauola/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/5075EDC3-2573-E411-A168-002590A80E08.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/WZJetsTo3LNu_Tune4C_13TeV-madgraph-tauola/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/745E51CD-6473-E411-B67C-002590A80DF0.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/WZJetsTo3LNu_Tune4C_13TeV-madgraph-tauola/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/8033DEC0-2673-E411-AD03-001E67398052.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/WZJetsTo3LNu_Tune4C_13TeV-madgraph-tauola/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/9C944BF0-2573-E411-9940-002590200840.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/WZJetsTo3LNu_Tune4C_13TeV-madgraph-tauola/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/ECED17B7-2573-E411-A237-001E67398011.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/WZJetsTo3LNu_Tune4C_13TeV-madgraph-tauola/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/F2BACD92-2573-E411-9720-002590A83192.root'
+#]
+#process.source.fileNames=['root://cms-xrd-global.cern.ch//store/mc/Phys14DR/T_tW-channel-DR_Tune4C_13TeV-CSA14-powheg-tauola/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/1E9DD9C1-8E7A-E411-87DD-1CC1DE04FF50.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/T_tW-channel-DR_Tune4C_13TeV-CSA14-powheg-tauola/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/3C999DBB-8E7A-E411-A218-1CC1DE1D1E3C.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/T_tW-channel-DR_Tune4C_13TeV-CSA14-powheg-tauola/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/3E092BBC-8E7A-E411-BD6A-1CC1DE1D03FC.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/T_tW-channel-DR_Tune4C_13TeV-CSA14-powheg-tauola/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/563D4EBB-8E7A-E411-A87A-1CC1DE1CDF30.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/T_tW-channel-DR_Tune4C_13TeV-CSA14-powheg-tauola/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/5E152ABE-8E7A-E411-A649-1CC1DE051038.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/T_tW-channel-DR_Tune4C_13TeV-CSA14-powheg-tauola/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/687E24C9-8E7A-E411-96BB-78E7D1E4B772.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/T_tW-channel-DR_Tune4C_13TeV-CSA14-powheg-tauola/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/AA10E6C4-8E7A-E411-B73C-1CC1DE0570A0.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/T_tW-channel-DR_Tune4C_13TeV-CSA14-powheg-tauola/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/AA26E5B9-8E7A-E411-91F2-1CC1DE1CEFC8.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/T_tW-channel-DR_Tune4C_13TeV-CSA14-powheg-tauola/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/D45C47C0-8E7A-E411-A890-1CC1DE0503C0.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/T_tW-channel-DR_Tune4C_13TeV-CSA14-powheg-tauola/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/10000/0A182E14-8B7A-E411-BA19-00266CFFC598.root'
+#]
+
+
+#process.source.fileNames=['root://cms-xrd-global.cern.ch//store/mc/Phys14DR/DYJetsToLL_M-50_13TeV-madgraph-pythia8/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/0432E62A-7A6C-E411-87BB-002590DB92A8.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/DYJetsToLL_M-50_13TeV-madgraph-pythia8/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/06C61714-7E6C-E411-9205-002590DB92A8.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/DYJetsToLL_M-50_13TeV-madgraph-pythia8/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/0EAD09A8-7C6C-E411-B903-0025901D493E.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/DYJetsToLL_M-50_13TeV-madgraph-pythia8/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/1E4D0DAE-7C6C-E411-B488-002590DB923C.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/DYJetsToLL_M-50_13TeV-madgraph-pythia8/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/2286DCDB-796C-E411-AAB4-002481E14D72.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/DYJetsToLL_M-50_13TeV-madgraph-pythia8/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/2683B2C5-7C6C-E411-BE0B-002590DB9214.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/DYJetsToLL_M-50_13TeV-madgraph-pythia8/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/28EF4E6A-7D6C-E411-A54F-0025907DCA38.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/DYJetsToLL_M-50_13TeV-madgraph-pythia8/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/2A733A85-7D6C-E411-8D2B-002481E14D72.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/DYJetsToLL_M-50_13TeV-madgraph-pythia8/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/3008BB28-7D6C-E411-AAC2-002590DB91F0.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/DYJetsToLL_M-50_13TeV-madgraph-pythia8/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/34167B14-7E6C-E411-A113-002590DB92A8.root'
+#
+#]
+
+#process.source.fileNames=['root://cms-xrd-global.cern.ch//store/mc/Phys14DR/WJetsToLNu_13TeV-madgraph-pythia8-tauola/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/02215B44-2D70-E411-90A3-0025905A60B8.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/WJetsToLNu_13TeV-madgraph-pythia8-tauola/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/0603D444-2D70-E411-AF03-002618943922.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/WJetsToLNu_13TeV-madgraph-pythia8-tauola/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/08947C88-3570-E411-974E-002618FDA26D.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/WJetsToLNu_13TeV-madgraph-pythia8-tauola/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/0E8B81D9-2D70-E411-94AB-0025905A4964.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/WJetsToLNu_13TeV-madgraph-pythia8-tauola/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/1225D443-2D70-E411-9D85-0025905B85F6.root'
+#]
+
+#process.source.fileNames=['root://cms-xrd-global.cern.ch//store/mc/Phys14DR/QCD_Pt-20toInf_MuEnrichedPt15_PionKaonDecay_Tune4C_13TeV_pythia8/MINIAODSIM/PU20bx25_PHYS14_25_V1-v3/00000/F263724C-3FA7-E411-A3BE-002590A371AE.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/QCD_Pt-20toInf_MuEnrichedPt15_PionKaonDecay_Tune4C_13TeV_pythia8/MINIAODSIM/PU20bx25_PHYS14_25_V1-v3/10000/325BE5B9-AAA6-E411-8371-001E673972E2.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/QCD_Pt-20toInf_MuEnrichedPt15_PionKaonDecay_Tune4C_13TeV_pythia8/MINIAODSIM/PU20bx25_PHYS14_25_V1-v3/10000/381E5CF2-8BA7-E411-B4ED-0025B3E05C2C.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/QCD_Pt-20toInf_MuEnrichedPt15_PionKaonDecay_Tune4C_13TeV_pythia8/MINIAODSIM/PU20bx25_PHYS14_25_V1-v3/10000/42E3F46B-ABA6-E411-AD64-002590A887AC.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/QCD_Pt-20toInf_MuEnrichedPt15_PionKaonDecay_Tune4C_13TeV_pythia8/MINIAODSIM/PU20bx25_PHYS14_25_V1-v3/10000/50474FE6-8BA7-E411-AE1C-001E67397021.root',
+#'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/QCD_Pt-20toInf_MuEnrichedPt15_PionKaonDecay_Tune4C_13TeV_pythia8/MINIAODSIM/PU20bx25_PHYS14_25_V1-v3/10000/585CB6CF-ABA6-E411-96B9-001E673972E2.root'
+#]
+
+#working
+process.source.fileNames=['root://cms-xrd-global.cern.ch//store/user/federica/MINIAOD/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/ZprimeToMuMu_M-5000_PU20BX25/150326_104035/0000/miniaod_1.root',
+                           'root://cms-xrd-global.cern.ch//store/user/federica/MINIAOD/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/ZprimeToMuMu_M-5000_PU20BX25/150326_104035/0000/miniaod_10.root',
+                          'root://cms-xrd-global.cern.ch//store/user/federica/MINIAOD/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/ZprimeToMuMu_M-5000_PU20BX25/150326_104035/0000/miniaod_2.root',
+                          'root://cms-xrd-global.cern.ch//store/user/federica/MINIAOD/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/ZprimeToMuMu_M-5000_PU20BX25/150326_104035/0000/miniaod_3.root',
+                           'root://cms-xrd-global.cern.ch//store/user/federica/MINIAOD/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/ZprimeToMuMu_M-5000_PU20BX25/150326_104035/0000/miniaod_4.root',
+                           'root://cms-xrd-global.cern.ch//store/user/federica/MINIAOD/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/ZprimeToMuMu_M-5000_PU20BX25/150326_104035/0000/miniaod_5.root',
+                           'root://cms-xrd-global.cern.ch//store/user/federica/MINIAOD/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/ZprimeToMuMu_M-5000_PU20BX25/150326_104035/0000/miniaod_6.root',
+                           'root://cms-xrd-global.cern.ch//store/user/federica/MINIAOD/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/ZprimeToMuMu_M-5000_PU20BX25/150326_104035/0000/miniaod_7.root',
+                           'root://cms-xrd-global.cern.ch//store/user/federica/MINIAOD/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/ZprimeToMuMu_M-5000_PU20BX25/150326_104035/0000/miniaod_8.root',
+                          'root://cms-xrd-global.cern.ch//store/user/federica/MINIAOD/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/ZprimeToMuMu_M-5000_PU20BX25/150326_104035/0000/miniaod_9.root']
+
+#AOD
+#process.source.fileNames =['root://cms-xrd-global.cern.ch//store/user/federica/PATTuple/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/ZprimeToMuMu_M-5000_PU20BX25/150223_144430/0000/pat_1.root',
+#'root://cms-xrd-global.cern.ch//store/user/federica/PATTuple/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/ZprimeToMuMu_M-5000_PU20BX25/150223_144430/0000/pat_10.root',
+#'root://cms-xrd-global.cern.ch//store/user/federica/PATTuple/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/ZprimeToMuMu_M-5000_PU20BX25/150223_144430/0000/pat_2.root',
+#'root://cms-xrd-global.cern.ch//store/user/federica/PATTuple/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/ZprimeToMuMu_M-5000_PU20BX25/150223_144430/0000/pat_3.root',
+#'root://cms-xrd-global.cern.ch//store/user/federica/PATTuple/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/ZprimeToMuMu_M-5000_PU20BX25/150223_144430/0000/pat_4.root',
+#'root://cms-xrd-global.cern.ch//store/user/federica/PATTuple/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/ZprimeToMuMu_M-5000_PU20BX25/150223_144430/0000/pat_5.root',
+#'root://cms-xrd-global.cern.ch//store/user/federica/PATTuple/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/ZprimeToMuMu_M-5000_PU20BX25/150223_144430/0000/pat_6.root',
+#'root://cms-xrd-global.cern.ch//store/user/federica/PATTuple/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/ZprimeToMuMu_M-5000_PU20BX25/150223_144430/0000/pat_7.root',
+#'root://cms-xrd-global.cern.ch//store/user/federica/PATTuple/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/ZprimeToMuMu_M-5000_PU20BX25/150223_144430/0000/pat_8.root',
+#'root://cms-xrd-global.cern.ch//store/user/federica/PATTuple/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/ZprimeToMuMu_M-5000_PU20BX25/150223_144430/0000/pat_9.root'
+#]
+#process.source.fileNames =['/store/mc/Phys14DR/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/MINIAODSIM/PU20bx25_tsg_PHYS14_25_V1-v1/00000/788396C0-9D6F-E411-97DF-002590494E34.root',
+                    #       '/store/mc/Phys14DR/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/MINIAODSIM/PU20bx25_tsg_PHYS14_25_V1-v1/00000/3023C1A6-D56F-E411-B210-002590AC4C08.root',
+                   #        '/store/mc/Phys14DR/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/MINIAODSIM/PU20bx25_tsg_PHYS14_25_V1-v1/00000/90575C8B-D56F-E411-A39B-0025904B1420.root',
+                  #         '/store/mc/Phys14DR/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/MINIAODSIM/PU20bx25_tsg_PHYS14_25_V1-v1/00000/FCEF82CA-9D6F-E411-A2FC-002481E0D5CE.root',
+                 #          '/store/mc/Phys14DR/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/MINIAODSIM/PU20bx25_tsg_PHYS14_25_V1-v1/10000/44B8EEE7-9A6F-E411-8858-002590DB0640.root',
+                #           '/store/mc/Phys14DR/ZprimeToMuMu_M-5000_Tune4C_13TeV-pythia8/MINIAODSIM/PU20bx25_tsg_PHYS14_25_V1-v1/10000/F03F87D0-9A6F-E411-8BC4-00266CFFA5E0.root']
 
 process.maxEvents.input = -1
 from SUSYBSMAnalysis.Zprime2muAnalysis.hltTriggerMatch_cfi import trigger_match, prescaled_trigger_match, trigger_paths, prescaled_trigger_paths, overall_prescale, offline_pt_threshold, prescaled_offline_pt_threshold
@@ -55,14 +128,19 @@ process.load('SUSYBSMAnalysis.Zprime2muAnalysis.PrescaleToCommon_cff')
 process.PrescaleToCommon.trigger_paths = prescaled_trigger_paths
 process.PrescaleToCommon.overall_prescale = overall_prescale
 
-process.load('SUSYBSMAnalysis.Zprime2muAnalysis.goodData_cff')
-process.load('HLTrigger.special.hltPhysicsDeclared_cfi')
-process.hltPhysicsDeclared.L1GtReadoutRecordTag = 'gtDigis'
+#process.load('SUSYBSMAnalysis.Zprime2muAnalysis.goodData_cff')
+#process.load('HLTrigger.special.hltPhysicsDeclared_cfi')
+#process.hltPhysicsDeclared.L1GtReadoutRecordTag = 'gtDigis'
 #process.goodDataPrimaryVertexFilter = cms.path(process.primaryVertexFilter)
 # The histogramming module that will be cloned multiple times below
 # for making histograms with different cut/dilepton combinations.
-from SUSYBSMAnalysis.Zprime2muAnalysis.HistosFromPAT_cfi import HistosFromPAT
-HistosFromPAT.leptonsFromDileptons = False ## True
+
+if flag == "miniAOD":
+	from SUSYBSMAnalysis.Zprime2muAnalysis.HistosFromPAT_cfi import HistosFromPAT
+	HistosFromPAT.leptonsFromDileptons = False;
+if flag == "AOD":
+	from SUSYBSMAnalysis.Zprime2muAnalysis.HistosFromPAT_cfi import HistosFromPAT_AOD
+	HistosFromPAT_AOD.leptonsFromDileptons = False ## True
 
 # These modules define the basic selection cuts. For the monitoring
 # sets below, we don't need to define a whole new module, since they
@@ -179,7 +257,11 @@ for cut_name, Selection in cuts.iteritems():
             alldil.tight_cut = prescaled_trigger_match
 
         # Histos now just needs to know which leptons and dileptons to use.
-        histos = HistosFromPAT.clone(lepton_src = cms.InputTag(leptons_name, 'muons'), dilepton_src = cms.InputTag(name))
+	if flag == 'miniAOD':
+		histos = HistosFromPAT.clone(lepton_src = cms.InputTag(leptons_name, 'muons'), dilepton_src = cms.InputTag(name))
+	
+	if flag == 'AOD':
+        	histos = HistosFromPAT_AOD.clone(lepton_src = cms.InputTag(leptons_name, 'muons'), dilepton_src = cms.InputTag(name))
 
         # Add all these modules to the process and the path list.
         setattr(process, allname, alldil)
@@ -194,7 +276,10 @@ for cut_name, Selection in cuts.iteritems():
         pobj = pobj#process.hltPhysicsDeclared * process.primaryVertexFilter * pobj
     if 'MuPrescaled' in cut_name:
         pobj = process.PrescaleToCommon * pobj
-    path = cms.Path(process.selectedPatMuons*pobj)
+    if flag == 'miniAOD':
+    	path = cms.Path(process.selectedPatMuons*pobj)
+    if flag == 'AOD':	
+    	path = cms.Path(pobj)#process.selectedPatMuons*pobj)
     setattr(process, pathname, path)
 
 def ntuplify(process, fill_gen_info=False):
