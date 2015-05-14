@@ -24,6 +24,7 @@ namespace patmuon {
     case TkTuneP: return muon::tevOptimized(mu, 200, 4, 6, -1).first;
     case TkTMR: return muon::TMR(mu.innerTrack(), mu.tpfmsMuon()).first;
     case TkTunePNew: return muon::tevOptimized(mu, 200, 17, 40, 0.25).first;
+      //case TkTunePNew: return mu.tunePMuonBestTrack();
     case nTrackTypes: default: return reco::TrackRef();
     }
   }
