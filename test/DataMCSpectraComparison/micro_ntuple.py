@@ -3,10 +3,11 @@
 import os
 from SUSYBSMAnalysis.Zprime2muAnalysis.roottools import ROOT
 
-path = 'data/Run2012MuonsOnly/ana_datamc_data.root'
+path = './zp2mu_histos.root.root'
 tmp_fn = 'micro_ntuple.temp.txt'
 branch_spec = 'vertex_m'
-cut = 'OurSel2012'
+#cut = 'OurSel2012'
+cut = ''
 
 f = ROOT.TFile(path)
 t = f.SimpleNtupler.Get('t')
