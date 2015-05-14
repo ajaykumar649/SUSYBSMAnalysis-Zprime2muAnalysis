@@ -13,6 +13,7 @@
 #include "TPaveLabel.h"
 #include "TText.h"
 
+
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 #include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
@@ -141,7 +142,7 @@ struct evt {
 
   bool operator > (const evt& rhs) const {return (mass > rhs.mass);}
   bool operator < (const evt& rhs) const {return (mass < rhs.mass);}
-  friend ostream& operator << (ostream& output, const evt& rhs) {
+  friend std::ostream& operator << (std::ostream& output, const evt& rhs) {
     output << " mass = "   << std::setw(7) << rhs.mass
 	   << " weight = " << std::setw(7) << rhs.weight;
     return output;
