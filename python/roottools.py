@@ -142,7 +142,11 @@ def cumulative_histogram(h, type='ge'):
         prev = 0 if i == first else hc.GetBinContent(i-step)
         c = h.GetBinContent(i) + prev
         hc.SetBinContent(i, c)
-        hc.SetBinError(i, c**0.5)
+       # hc.SetBinError(i, c**0.5) // changed by Slava
+        if c > 0:
+            hc.SetBinError(i, c**0.5)
+        else:
+            hc.SetBinError(i, 0.)
     return hc
 
 def detree(t, branches='run:lumi:event', cut='', xform=lambda x: tuple(int(y) for y in x)):

@@ -14,7 +14,7 @@ process.source = cms.Source('PoolSource', fileNames = cms.untracked.vstring('/st
 process.options = cms.untracked.PSet(wantSummary = cms.untracked.bool(False))
 
 process.load('FWCore.MessageLogger.MessageLogger_cfi')
-process.MessageLogger.cerr.FwkReport.reportEvery = 1
+process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
 process.TFileService = cms.Service('TFileService', fileName=cms.string('zp2mu_histos.root'))
 
@@ -22,6 +22,10 @@ process.load('Configuration.Geometry.GeometryIdeal_cff')
 process.load('Configuration.StandardSequences.MagneticField_AutoFromDBCurrent_cff')
 process.load('TrackingTools.TransientTrack.TransientTrackBuilder_cfi')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
-process.GlobalTag.globaltag =  'PHYS14_25_V1::All'
+process.GlobalTag.globaltag =  'PHYS1474_25V2'
 
-process.load('SUSYBSMAnalysis.Zprime2muAnalysis.Zprime2muAnalysis_cff')
+flag = cms.string('miniAOD')
+if flag == 'miniAOD':
+	process.load('SUSYBSMAnalysis.Zprime2muAnalysis.Zprime2muAnalysis_cff')
+if flag == 'AOD':
+	process.load('SUSYBSMAnalysis.Zprime2muAnalysis.Zprime2muAnalysis_cff_AOD')
