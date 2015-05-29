@@ -1,9 +1,14 @@
 import FWCore.ParameterSet.Config as cms
 
+patTrigger = cms.EDProducer( "PATTriggerProducer", 
+                             onlyStandAlone = cms.bool( False ), 
+                             processName    = cms.string( "HLT" )             
+                             )
+
 # JMTBAD to drop
 muonTriggerMatchHLTMuons = cms.EDProducer('PATTriggerMatcherDRLessByR',
     src                   = cms.InputTag('cleanPatMuons'),
-    #src                   = cms.InputTag('selectedPatMuons'),#raffa
+    #src                   = cms.InputTag('selectedPatMuons'),
     matched               = cms.InputTag('patTrigger'),
     #matchedCuts = cms.string( 'type( "TriggerMuon" ) && path( "HLT_Mu24_v*", 1, 0 )' ),
     #matchedCuts           = cms.string('type( "TriggerMuon" ) && path("HLT_Mu40*" )'),
@@ -15,6 +20,18 @@ muonTriggerMatchHLTMuons = cms.EDProducer('PATTriggerMatcherDRLessByR',
     resolveAmbiguities    = cms.bool(True),
     resolveByMatchQuality = cms.bool(True)
 )
+
+## ==== Embed ====
+#from MuonAnalysis.MuonAssociators.patMuonsWithTrigger_cff import patMuonsWithTrigger
+cleanPatMuonsTriggerMatch =  cms.EDProducer("PATTriggerMatchMuonEmbedder",                                           
+                                            src = cms.InputTag("cleanPatMuons"),                                         
+                                            matches = cms.VInputTag("muonTriggerMatchHLTMuons")  
+                                            )
+
+## ==== Trigger Sequence ====
+patTriggerMatching = cms.Sequence(patTrigger *
+                                  muonTriggerMatchHLTMuons *
+                                  cleanPatMuonsTriggerMatch)
 
 trigger_pt_threshold = 40
 offline_pt_threshold = 45
