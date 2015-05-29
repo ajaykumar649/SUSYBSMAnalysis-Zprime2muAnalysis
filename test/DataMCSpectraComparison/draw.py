@@ -9,7 +9,7 @@ from optparse import OptionParser
 # We have to optparse before ROOT does, or else it will eat our
 # options (at least -h/--help gets eaten). So don't move this!
 parser = OptionParser()
-parser.add_option('-d', '--histo-dir', dest='histo_dir', default='data/Run2012MuonsOnly',
+parser.add_option('-d', '--histo-dir', dest='histo_dir', default='data/Run2015MuonsOnly',
                   help='Directory containing the input files for the data. Default is %default. The files expected to be in this directory are ana_datamc_data.root, the ROOT file containing the input histograms, and ana_datamc_data.lumi, the log file from the output of LumiCalc. Optionally the directory can contain a link to a directory for MC histogram ROOT files; the link/directory must be named "mc".')
 parser.add_option('--no-print-table', action='store_false', dest='print_table', default=True,
                   help='Do not print out the ASCII table of event counts in specified mass ranges.')
@@ -21,7 +21,7 @@ parser.add_option('--no-lumi-rescale', action='store_false', dest='rescale_lumi'
                   help='Do not rescale the luminosity.')
 parser.add_option('--for-rescale-factors', action='store_true', dest='for_rescale_factors', default=False,
                   help='Just print the tables for the Z peak counts to determine the luminosity rescaling factors (implies --no-lumi-rescale and --no-save-plots).')
-parser.add_option('--lumi_syst_frac', dest='lumi_syst_frac', type='float', default=0.044,
+parser.add_option('--lumi_syst_frac', dest='lumi_syst_frac', type='float', default=0.026,
                   help='Set the systematic uncertainty for the luminosity (as a relative value). Default is %default.')
 parser.add_option('--no-draw-zprime', action='store_false', dest='draw_zprime', default=True,
                   help='Do not draw the Z\' curve.')
@@ -101,7 +101,8 @@ class Drawer:
         if not os.path.isdir(self.histo_dir):
             raise ValueError('histo_dir %s is not a directory' % self.histo_dir)
 
-        self.data_fn = os.path.join(self.histo_dir, 'ana_datamc_data.root')
+       # self.data_fn = os.path.join(self.histo_dir, 'ana_datamc_data.root')
+        self.data_fn = os.path.join(self.histo_dir, 'zp2mu_histosTestSlava.root') #wrong file! jut to test the python config
         if not os.path.isfile(self.data_fn):
             raise ValueError('data_fn %s is not a file' % self.data_fn)
         self.data_f = ROOT.TFile(self.data_fn)
@@ -151,7 +152,8 @@ class Drawer:
         self.dileptons = ['MuonsPlusMuonsMinus', 'MuonsSameSign', 'MuonsAllSigns', 'MuonsElectronsOppSign', 'MuonsElectronsSameSign', 'MuonsElectronsAllSigns']
 #        self.cutsets = ['VBTF', 'OurNew', 'OurOld', 'Simple', 'EmuVeto', 'OurNoIso', 'OurMuPrescaled', 'VBTFMuPrescaled']
         self.cutsets = ['OurNew', 'Our2012', 'Simple', 'EmuVeto', 'OurNoIso', 'OurMuPrescaledNew', 'OurMuPrescaled2012']
-        self.mass_ranges_for_table = [(60,120), (120,200), (200,400), (400,600), (120,), (200,), (400,), (600,)]
+        #self.mass_ranges_for_table = [(60,120), (120,200), (200,400), (400,600), (120,), (200,), (400,), (600,)] // Changed by Slava
+        self.mass_ranges_for_table = [(60,120), (120,200), (120,400), (400,600), (600,900,), (900,1300), (1300,1800), (1800,), (120,), (200,), (400,), (600,)]
 
         if options.include_quantities is not None:
             self.quantities_to_compare = options.include_quantities
@@ -317,14 +319,15 @@ class Drawer:
         # rather than trying to be smart and getting them from the
         # histogram files.
         # Factors below were calculated for the MuonPhys JSON file for
-        # all 2012 collision runs released on December 14 and
-        # correspond to 20.637/fb.
+        # Jan 22nd re-reco released on May 8 and correspond to 20.569/fb.
         # If the cutset is not one of the below, don't rescale.
         rescale_factor = 1.
         if 'New' in cutset:
-            rescale_factor = 21671./22531.7
+          #  rescale_factor = 21671./22531.7 // Changed by Slava
+             rescale_factor = 21471./22450.4
         elif '2012' in cutset or cutset =='OurNoIso':
-            rescale_factor = 24502./24610.4
+           # rescale_factor = 24502./24610.4 // Changed by Slava
+            rescale_factor = 24422./24521.8
         return rescale_factor
 
     def advertise_lines(self):
@@ -421,6 +424,28 @@ class Drawer:
                     sample.histogram.Add(f.Get('os'), 1.)
                 else:
                     print "+++ Unknown dilepton type! +++"
+
+                 # All this mess is just to copy/paste the content of the histogram in [50; 2000] GeV range into the histogram in [0; 3000] GeV range
+                 # Added by Slava
+                nbins = sample.histogram.GetNbinsX();
+                 # for ibin in range(1, nbins+1):
+                 #     xlow = sample.histogram.GetBinLowEdge(ibin)
+                 #     xupp = xlow + sample.histogram.GetBinWidth(ibin)
+                 #     print ibin, xlow, xupp, sample.histogram.GetBinContent(ibin)
+                xlow = int(sample.histogram.GetBinLowEdge(1))
+                xupp = int(sample.histogram.GetBinLowEdge(nbins) + sample.histogram.GetBinWidth(1))
+                extended_hist = ROOT.TH1F("", "ss", 3000, 0, 3000)
+                for ibin in range(1, 3001):
+                    if ibin < xlow or ibin > xupp:
+                        extended_hist.SetBinContent(ibin, 0)
+                        extended_hist.SetBinError(ibin, 0)
+                    else:
+                        jbin = ibin-xlow
+                        extended_hist.SetBinContent(ibin, sample.histogram.GetBinContent(jbin))
+                        extended_hist.SetBinError(ibin, sample.histogram.GetBinError(jbin))
+                #    print ibin, extended_hist.GetBinLowEdge(ibin), extended_hist.GetBinContent(ibin)
+                # Use old QCD temporarily
+                #sample.histogram = extended_hist.Clone()
 
                 if (quantity_to_compare == 'DimuonMassVtxConstrainedLog'):
                     # Re-pack fixed-bin-width histogram into a variable-bin-width one
@@ -534,6 +559,9 @@ class Drawer:
                 # statistical and systematic uncertainties for this
                 # sample.
                 w = sample.scaled_by
+                if sample.integral < 0: #added by slava
+                    print sample.name, mass_range, sample.integral, w
+                    sample.integral = 0
                 var = w * sample.integral # not w**2 * sample.integral because sample.integral is already I*w
                 syst_var = (sample.syst_frac * sample.integral)**2
 
@@ -868,7 +896,9 @@ class Drawer:
         if dilepton != 'MuonsPlusMuonsMinus':
             return
 #        if quantity_to_compare != 'DimuonMassVtxConstrainedLog':
-        if quantity_to_compare != 'DimuonMassVertexConstrained':
+ #       if quantity_to_compare != 'DimuonMassVertexConstrained':
+        # changed by Slava
+        if quantity_to_compare != 'DimuonMassVtxConstrainedLog': 
             return
 
         zdy_ifois = 0
@@ -986,7 +1016,7 @@ class Drawer:
                         self.prepare_mc_histograms(cutset, dilepton, quantity_to_compare, cumulative)
                         self.prepare_data_histogram(cutset, dilepton, quantity_to_compare, cumulative)
 
-                        # self.save_histos(cutset, dilepton, quantity_to_compare, cumulative)
+                        self.save_histos(cutset, dilepton, quantity_to_compare, cumulative)
                         
                         # Print the entries for the ASCII table for the current
                         # cutset+dilepton. Could extend this to support counts for
